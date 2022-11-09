@@ -13,7 +13,8 @@ namespace ElectronicHealthCardApp.Repository
         {
             Response<List<Person>> result = new Response<List<Person>>();
             result.Data = _dbContext.People.ToList();
+            var i = 0;
             return result;
-        }
+        }        
     }
 }
