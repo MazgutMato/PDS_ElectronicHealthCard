@@ -1,28 +1,3 @@
-﻿@model List<ElectronicHealthCardApp.Models.Person>
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
-<br />
-<div class="text-center">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-            </tr>
-        </thead>
-        <tbody id="Table_data">
-            @{
-                foreach (var row in Model)
-                {
-                    <tr>
-                        <td>@row.PersonId</td>
-                        <td>@row.FirstName</td>
-                        <td>@row.LastName</td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-</div>

@@ -16,8 +16,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var people = _repository.GetPeople();
-        return View(people.Data);
+        return View();
     }
 
     public IActionResult Privacy()
