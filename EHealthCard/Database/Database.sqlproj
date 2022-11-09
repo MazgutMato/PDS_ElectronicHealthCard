@@ -68,5 +68,8 @@
     <Build Include="dbo\payment.sql" />
     <Build Include="dbo\diagnosis_type.sql" />
     <Build Include="dbo\diagnoses.sql" />
+    <Build Include="hospitalizationInsertTrigger.sql" />
+    <Build Include="insuranceInsertTrigger.sql" />
+    <Build Include="testTrigger.sql" />
   </ItemGroup>
 </Project>
