@@ -1,8 +1,0 @@
-﻿CREATE TRIGGER [testTrigger]
-ON person
-INSTEAD OF INSERT
-AS
-BEGIN
-	RAISERROR('Ahoj Matej',15,1);
-	RETURN;
-END
