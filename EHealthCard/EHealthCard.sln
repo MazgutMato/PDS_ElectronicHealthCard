@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{CFC0F54E-F4E0-4747-96E4-0C7FE6D554DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectronicHealthCardApp", "ElectronicHealthCardApp\ElectronicHealthCardApp.csproj", "{D9EBF882-9B96-4CB8-8A77-8E1A9606F305}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EHealthCardApp", "EHealthCardApp\EHealthCardApp.csproj", "{8C01862F-F309-43B6-9B1F-814FE6923746}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{CFC0F54E-F4E0-4747-96E4-0C7FE6D554DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFC0F54E-F4E0-4747-96E4-0C7FE6D554DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFC0F54E-F4E0-4747-96E4-0C7FE6D554DF}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{D9EBF882-9B96-4CB8-8A77-8E1A9606F305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9EBF882-9B96-4CB8-8A77-8E1A9606F305}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9EBF882-9B96-4CB8-8A77-8E1A9606F305}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9EBF882-9B96-4CB8-8A77-8E1A9606F305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C01862F-F309-43B6-9B1F-814FE6923746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C01862F-F309-43B6-9B1F-814FE6923746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C01862F-F309-43B6-9B1F-814FE6923746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C01862F-F309-43B6-9B1F-814FE6923746}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
