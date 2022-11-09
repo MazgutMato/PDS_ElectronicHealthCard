@@ -1,21 +1,23 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ElectronicHealthCardApp.Models;
+using ElectronicHealthCardApp.Repository;
 
 namespace ElectronicHealthCardApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IRepository _repository;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IRepository repository)
     {
-        _logger = logger;
+        _repository = repository;
     }
 
     public IActionResult Index()
     {
-        return View();
+        var people = _repository.GetPeople();
+        return View(people);
     }
 
     public IActionResult Privacy()
