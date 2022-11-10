@@ -60,7 +60,7 @@ namespace EHealthCardApp.Repository
             return result;
         }
 
-        public Response<string> GenerateData(Generator generator)
+        public Response<string> GenerateData(int number)
         {
             throw new NotImplementedException();
         }

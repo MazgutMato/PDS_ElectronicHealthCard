@@ -18,6 +18,20 @@ public class HomeController : Controller
     {
         return View();
     }
+    [HttpPost]
+    public IActionResult GenerateData()
+    {
+        try
+        {
+            var number = int.Parse(Request.Form["number"]);
+        }
+        catch(Exception ex)
+        {
+            TempData["Message"] = ex.Message;
+            return View("Index");
+        }  
+        return View("Index");
+    }
 
     public IActionResult Privacy()
     {

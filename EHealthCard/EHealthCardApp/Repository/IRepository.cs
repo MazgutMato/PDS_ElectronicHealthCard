@@ -9,6 +9,6 @@ namespace EHealthCardApp.Repository
         Response<string> DeletePerson(string id);
         Response<string> UpdatePerson(Person person);
         Response<string> AddPerson(Person person);
-        Response<string> GenerateData(Generator generator);
+        Response<string> GenerateData(int number);
     }
 }
