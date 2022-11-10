@@ -1,6 +1,6 @@
 ﻿/*
-Created: 05.11.2022
-Modified: 09.11.2022
+Created: 5. 11. 2022
+Modified: 10. 11. 2022
 Model: SP - database
 Database: MS SQL Server 2019
 */
@@ -13,9 +13,11 @@ Database: MS SQL Server 2019
 CREATE TABLE [person]
 (
  [person_id] Char(10) NOT NULL,
+ [ZIP] Char(5) NOT NULL,
  [first_name] Varchar(20) NOT NULL,
  [last_name] Varchar(30) NOT NULL,
- [ZIP] Char(5) NULL
+ [phone] Varchar(16) NULL,
+ [email] Varchar(40) NULL
 )
 go
 
@@ -50,7 +52,7 @@ CREATE TABLE [hospital]
  [hospital_name] Varchar(20) NOT NULL,
  [ZIP] Char(5) NOT NULL,
  [capacity] Int NOT NULL
-        CHECK ([capacity] > 0)
+        CONSTRAINT [check_capacity] CHECK ([capacity] > 0)
 )
 go
 

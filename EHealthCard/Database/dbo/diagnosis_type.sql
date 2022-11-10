@@ -1,5 +1,11 @@
 ﻿-- Table diagnosis_type
 
+-- Table diagnosis_type
+
+-- Table diagnosis_type
+
+-- Table diagnosis_type
+
 CREATE TABLE [diagnosis_type]
 (
  [diagnosis_id] Char(5) NOT NULL,
@@ -7,6 +13,12 @@ CREATE TABLE [diagnosis_type]
  [daily_costs] Money NOT NULL
 )
 GO
+-- Add keys for table diagnosis_type
+
+-- Add keys for table diagnosis_type
+
+-- Add keys for table diagnosis_type
+
 -- Add keys for table diagnosis_type
 
 ALTER TABLE [diagnosis_type] ADD CONSTRAINT [PK_diagnosis_type] PRIMARY KEY ([diagnosis_id])
