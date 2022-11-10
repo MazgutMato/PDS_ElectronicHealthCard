@@ -1,5 +1,5 @@
-﻿using ElectronicHealthCardApp.Models;
-using ElectronicHealthCardApp.Repository;
+﻿using EHealthCardApp.Models;
+using EHealthCardApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EHealthCardApp.Controllers

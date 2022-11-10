@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using ElectronicHealthCardApp.Models;
-using ElectronicHealthCardApp.Repository;
+using EHealthCardApp.Models;
+using EHealthCardApp.Repository;
 
-namespace ElectronicHealthCardApp.Controllers;
+namespace EHealthCardApp.Controllers;
 
 public class HomeController : Controller
 {

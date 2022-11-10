@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ElectronicHealthCardApp.Models;
+namespace EHealthCardApp.Models;
 
 public partial class City
 {

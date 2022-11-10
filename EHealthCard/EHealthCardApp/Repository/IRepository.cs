@@ -1,6 +1,6 @@
-﻿using ElectronicHealthCardApp.Models;
+﻿using EHealthCardApp.Models;
 
-namespace ElectronicHealthCardApp.Repository
+namespace EHealthCardApp.Repository
 {
     public interface IRepository
     {
@@ -9,5 +9,6 @@ namespace ElectronicHealthCardApp.Repository
         Response<string> DeletePerson(string id);
         Response<string> UpdatePerson(Person person);
         Response<string> AddPerson(Person person);
+        Response<string> GenerateData(Generator generator);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ElectronicHealthCardApp.Models
+﻿namespace EHealthCardApp.Models
 {
     public class Response<T>
     {

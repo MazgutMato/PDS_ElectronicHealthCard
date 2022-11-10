@@ -1,6 +1,6 @@
-﻿using ElectronicHealthCardApp.Models;
+﻿using EHealthCardApp.Models;
 
-namespace ElectronicHealthCardApp.Repository
+namespace EHealthCardApp.Repository
 {
     public class Repository : IRepository
     {
@@ -27,7 +27,7 @@ namespace ElectronicHealthCardApp.Repository
                 }
             }
             catch (Exception ex)
-            {                
+            {
                 result.message = ex.InnerException.Message;
 
             }
@@ -58,6 +58,11 @@ namespace ElectronicHealthCardApp.Repository
 
             }
             return result;
+        }
+
+        public Response<string> GenerateData(Generator generator)
+        {
+            throw new NotImplementedException();
         }
 
         public Response<List<Person>> GetPeople()
