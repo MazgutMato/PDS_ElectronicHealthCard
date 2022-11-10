@@ -15,30 +15,20 @@ namespace ElectronicHealthCardApp.Repository
             Response<string> result = new Response<string>();
             try
             {
-
-                var user = _dbContext.People.FirstOrDefault(d => d.PersonId == person.PersonId);
-                if (user != null) //if name exist update data
+                _dbContext.People.Add(person);
+                var res = _dbContext.SaveChanges();
+                if (res == 1)
                 {
-                    result.Data = "User already Exists!";
+                    result.message = "Successfully added!";
                 }
                 else
                 {
-                    _dbContext.People.Add(person);
-                    var res = _dbContext.SaveChanges();
-                    if (res == 1)
-                    {
-                        result.Data = "Success";
-                    }
-                    else
-                    {
-                        result.Data = "Failed";
-                    }
-
+                    result.message = "Added faild!";
                 }
             }
             catch (Exception ex)
-            {
-                result.Data = ex.Message;
+            {                
+                result.message = ex.InnerException.Message;
 
             }
             return result;
@@ -54,11 +44,11 @@ namespace ElectronicHealthCardApp.Repository
                 var res = _dbContext.SaveChanges();
                 if (res == 1)
                 {
-                    result.message = "Success";
+                    result.message = "Successfully deleted!";
                 }
                 else
                 {
-                    result.message = "Failed";
+                    result.message = "Added faild!";
                 }
 
             }
@@ -100,17 +90,17 @@ namespace ElectronicHealthCardApp.Repository
                 var res = _dbContext.SaveChanges();
                 if (res == 1)
                 {
-                    result.Data = "Success";
+                    result.message = "Successfully updated!";
                 }
                 else
                 {
-                    result.Data = "Failed";
+                    result.message = "Updated failed!";
                 }
 
             }
             catch (Exception ex)
             {
-                result.Data = ex.Message;
+                result.message = ex.Message;
             }
             return result;
         }

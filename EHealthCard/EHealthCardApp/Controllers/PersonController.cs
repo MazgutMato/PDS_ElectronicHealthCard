@@ -12,7 +12,7 @@ namespace EHealthCardApp.Controllers
         {
             _repository = repository;
         }
-        public IActionResult Index()
+        public IActionResult People()
         {
             var people = _repository.GetPeople();
             return View(people.Data);
@@ -27,8 +27,14 @@ namespace EHealthCardApp.Controllers
             if (ModelState.IsValid)
             {
                 var result = _repository.AddPerson(person);
-
-                return RedirectToAction("Index");
+                TempData["Message"] = result.message;
+                if (result.message == "Successfully added!")
+                {
+                    return RedirectToAction("People");
+                } else
+                {
+                    return View();
+                }       
             }
 
             return View();
@@ -45,7 +51,15 @@ namespace EHealthCardApp.Controllers
             if (ModelState.IsValid)
             {
                 var result = _repository.UpdatePerson(person);
-                return RedirectToAction("Index");
+                TempData["Message"] = result.message;
+                if (result.message == "Successfully updated!")
+                {
+                    return RedirectToAction("People");
+                }
+                else
+                {
+                    return View();
+                }
             }
 
             return View(person);
@@ -53,7 +67,8 @@ namespace EHealthCardApp.Controllers
         public IActionResult DeletePerson(string id)
         {
             var result = _repository.DeletePerson(id);
-            return RedirectToAction("Index");
+            TempData["Message"] = result.message;
+            return RedirectToAction("People");
         }
     }
 }
