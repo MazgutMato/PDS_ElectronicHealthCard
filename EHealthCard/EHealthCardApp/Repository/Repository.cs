@@ -1,4 +1,6 @@
 ﻿using EHealthCardApp.Models;
+using System.Text;
+using System;
 
 namespace EHealthCardApp.Repository
 {
@@ -60,9 +62,67 @@ namespace EHealthCardApp.Repository
             return result;
         }
 
-        public Response<string> GenerateData(int number)
+        private string RandomString(string chars, int minSize, int maxSize, bool firstUpper, bool allUpper)
         {
-            throw new NotImplementedException();
+            var random = new Random();
+            var word = new char[random.Next(minSize, maxSize)];
+
+            if (firstUpper)
+            {
+                word[0] = Char.ToUpper(chars[random.Next(chars.Length)]);
+            } else
+            {
+                word[0] = chars[random.Next(chars.Length)];
+            }
+
+            for (int i = 1; i < word.Length; i++)
+            {
+                if (allUpper)
+                {
+                    word[i] = Char.ToUpper(chars[random.Next(chars.Length)]);
+                } else
+                {
+                    word[i] = chars[random.Next(chars.Length)];
+                }
+            }
+
+            return new string(word);
+        }
+
+        public Response<string> GenerateData(int number)
+        {            
+            Response<string> result = new Response<string>();
+            try
+            {
+                Dictionary<string, City> cities = new Dictionary<string, City>();
+                for (var i = 0; i < number; i++)
+                {
+                    var city = new City();
+                    city.Zip = this.RandomString("0123456789", 5, 5, false, false);
+                    city.CityName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
+                    if (!cities.ContainsKey(city.Zip))
+                    {
+                        cities.Add(city.Zip, city);
+                    }
+                }
+                _dbContext.Cities.AddRange(cities.Values);
+
+                var res = _dbContext.SaveChanges();
+                if (res == 1)
+                {
+                    result.message = "Successfully deleted!";
+                }
+                else
+                {
+                    result.message = "Added faild!";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.message = ex.Message;
+            }
+            return result;
         }
 
         public Response<List<Person>> GetPeople()

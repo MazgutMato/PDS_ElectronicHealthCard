@@ -23,7 +23,15 @@ public class HomeController : Controller
     {
         try
         {
-            var number = int.Parse(Request.Form["number"]);
+            var number = int.Parse(Request.Form["number"]);           
+            if(number < 0)
+            {
+                TempData["Message"] = "Number must be greater then 0!";
+                return View("Index");
+            }
+            var result = _repository.GenerateData(number);
+            TempData["Message"] = result.message;
+            return View("Index");
         }
         catch(Exception ex)
         {
