@@ -1,6 +1,6 @@
 ﻿/*
 Created: 5. 11. 2022
-Modified: 10. 11. 2022
+Modified: 11. 11. 2022
 Model: SP - database
 Database: MS SQL Server 2019
 */
@@ -131,9 +131,9 @@ go
 ALTER TABLE [payment] ADD CONSTRAINT [PK_payment] PRIMARY KEY ([hospital_name],[comp_id])
 go
 
--- Table diagnosis_type
+-- Table diagnoses_type
 
-CREATE TABLE [diagnosis_type]
+CREATE TABLE [diagnoses_type]
 (
  [diagnosis_id] Char(5) NOT NULL,
  [description] Varchar(50) NOT NULL,
@@ -141,9 +141,9 @@ CREATE TABLE [diagnosis_type]
 )
 go
 
--- Add keys for table diagnosis_type
+-- Add keys for table diagnoses_type
 
-ALTER TABLE [diagnosis_type] ADD CONSTRAINT [PK_diagnosis_type] PRIMARY KEY ([diagnosis_id])
+ALTER TABLE [diagnoses_type] ADD CONSTRAINT [PK_diagnoses_type] PRIMARY KEY ([diagnosis_id])
 go
 
 -- Table diagnoses
@@ -201,7 +201,7 @@ go
 
 
 
-ALTER TABLE [diagnoses] ADD CONSTRAINT [Relationship25] FOREIGN KEY ([diagnosis_id]) REFERENCES [diagnosis_type] ([diagnosis_id]) ON UPDATE NO ACTION ON DELETE NO ACTION
+ALTER TABLE [diagnoses] ADD CONSTRAINT [Relationship25] FOREIGN KEY ([diagnosis_id]) REFERENCES [diagnoses_type] ([diagnosis_id]) ON UPDATE NO ACTION ON DELETE NO ACTION
 go
 
 

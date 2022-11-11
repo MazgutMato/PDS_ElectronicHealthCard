@@ -1,11 +1,5 @@
 ﻿-- Table hospitalization
 
--- Table hospitalization
-
--- Table hospitalization
-
--- Table hospitalization
-
 CREATE TABLE [hospitalization]
 (
  [person_id] Char(10) NOT NULL,
@@ -19,12 +13,6 @@ ALTER TABLE [hospitalization] ADD CONSTRAINT [Relationship22] FOREIGN KEY ([hosp
 GO
 ALTER TABLE [hospitalization] ADD CONSTRAINT [Relationship23] FOREIGN KEY ([person_id]) REFERENCES [person] ([person_id]) ON UPDATE NO ACTION ON DELETE NO ACTION
 GO
--- Add keys for table hospitalization
-
--- Add keys for table hospitalization
-
--- Add keys for table hospitalization
-
 -- Add keys for table hospitalization
 
 ALTER TABLE [hospitalization] ADD CONSTRAINT [PK_hospitalization] PRIMARY KEY ([date_start],[hospital_name],[person_id])

@@ -17,9 +17,9 @@ public partial class EHealthCardContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
-    public virtual DbSet<Diagnosis> Diagnoses { get; set; }
+    public virtual DbSet<DiagnosesType> DiagnosesTypes { get; set; }
 
-    public virtual DbSet<DiagnosisType> DiagnosisTypes { get; set; }
+    public virtual DbSet<Diagnosis> Diagnoses { get; set; }
 
     public virtual DbSet<Hospital> Hospitals { get; set; }
 
@@ -54,6 +54,26 @@ public partial class EHealthCardContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("city_name");
+        });
+
+        modelBuilder.Entity<DiagnosesType>(entity =>
+        {
+            entity.HasKey(e => e.DiagnosisId);
+
+            entity.ToTable("diagnoses_type");
+
+            entity.Property(e => e.DiagnosisId)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("diagnosis_id");
+            entity.Property(e => e.DailyCosts)
+                .HasColumnType("money")
+                .HasColumnName("daily_costs");
+            entity.Property(e => e.Description)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("description");
         });
 
         modelBuilder.Entity<Diagnosis>(entity =>
@@ -94,26 +114,6 @@ public partial class EHealthCardContext : DbContext
                 .HasConstraintName("Relationship24");
         });
 
-        modelBuilder.Entity<DiagnosisType>(entity =>
-        {
-            entity.HasKey(e => e.DiagnosisId);
-
-            entity.ToTable("diagnosis_type");
-
-            entity.Property(e => e.DiagnosisId)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("diagnosis_id");
-            entity.Property(e => e.DailyCosts)
-                .HasColumnType("money")
-                .HasColumnName("daily_costs");
-            entity.Property(e => e.Description)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("description");
-        });
-
         modelBuilder.Entity<Hospital>(entity =>
         {
             entity.HasKey(e => e.HospitalName);
@@ -143,7 +143,7 @@ public partial class EHealthCardContext : DbContext
         {
             entity.HasKey(e => new { e.DateStart, e.HospitalName, e.PersonId });
 
-            entity.ToTable("hospitalization");
+            entity.ToTable("hospitalization", tb => tb.HasTrigger("hospitalizationInsertTrigger"));
 
             entity.Property(e => e.DateStart)
                 .HasColumnType("date")
@@ -176,7 +176,7 @@ public partial class EHealthCardContext : DbContext
         {
             entity.HasKey(e => new { e.PersonId, e.CompId, e.DateStart });
 
-            entity.ToTable("insurance");
+            entity.ToTable("insurance", tb => tb.HasTrigger("isnuranceInsertTrigger"));
 
             entity.Property(e => e.PersonId)
                 .HasMaxLength(10)
@@ -270,6 +270,10 @@ public partial class EHealthCardContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("person_id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("email");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -278,6 +282,10 @@ public partial class EHealthCardContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("last_name");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(16)
+                .IsUnicode(false)
+                .HasColumnName("phone");
             entity.Property(e => e.Zip)
                 .HasMaxLength(5)
                 .IsUnicode(false)
@@ -286,6 +294,7 @@ public partial class EHealthCardContext : DbContext
 
             entity.HasOne(d => d.ZipNavigation).WithMany(p => p.People)
                 .HasForeignKey(d => d.Zip)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Relationship4");
         });
 

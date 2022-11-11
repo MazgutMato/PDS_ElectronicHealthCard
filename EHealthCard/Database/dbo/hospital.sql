@@ -1,11 +1,5 @@
 ﻿-- Table hospital
 
--- Table hospital
-
--- Table hospital
-
--- Table hospital
-
 CREATE TABLE [hospital]
 (
  [hospital_name] Varchar(20) NOT NULL,
@@ -18,20 +12,8 @@ ALTER TABLE [hospital] ADD CONSTRAINT [Relationship9] FOREIGN KEY ([ZIP]) REFERE
 GO
 -- Add keys for table hospital
 
--- Add keys for table hospital
-
--- Add keys for table hospital
-
--- Add keys for table hospital
-
 ALTER TABLE [hospital] ADD CONSTRAINT [PK_hospital] PRIMARY KEY ([hospital_name])
 GO
--- Create indexes for table hospital
-
--- Create indexes for table hospital
-
--- Create indexes for table hospital
-
 -- Create indexes for table hospital
 
 CREATE INDEX [IX_Relationship9] ON [hospital] ([ZIP])

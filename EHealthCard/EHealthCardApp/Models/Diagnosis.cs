@@ -15,7 +15,7 @@ public partial class Diagnosis
 
     public byte[]? Document { get; set; }
 
-    public virtual DiagnosisType DiagnosisNavigation { get; set; } = null!;
+    public virtual DiagnosesType DiagnosisNavigation { get; set; } = null!;
 
     public virtual Hospitalization Hospitalization { get; set; } = null!;
 }

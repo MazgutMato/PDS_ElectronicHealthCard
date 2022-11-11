@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EHealthCardApp.Models;
 
-public partial class DiagnosisType
+public partial class DiagnosesType
 {
     public string DiagnosisId { get; set; } = null!;
 

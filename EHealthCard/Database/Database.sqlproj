@@ -59,6 +59,8 @@
     <Folder Include="dbo\" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="hospitalizationInsertTrigger.sql" />
+    <Build Include="insuranceInsertTrigger.sql" />
     <Build Include="dbo\person.sql" />
     <Build Include="dbo\insurance_comp.sql" />
     <Build Include="dbo\hospital.sql" />
@@ -66,9 +68,7 @@
     <Build Include="dbo\insurance.sql" />
     <Build Include="dbo\hospitalization.sql" />
     <Build Include="dbo\payment.sql" />
-    <Build Include="dbo\diagnosis_type.sql" />
+    <Build Include="dbo\diagnoses_type.sql" />
     <Build Include="dbo\diagnoses.sql" />
-    <Build Include="hospitalizationInsertTrigger.sql" />
-    <Build Include="insuranceInsertTrigger.sql" />
   </ItemGroup>
 </Project>
