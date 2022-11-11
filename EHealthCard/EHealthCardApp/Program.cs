@@ -1,12 +1,10 @@
 using EHealthCardApp.Models;
-using EHealthCardApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<EHealthCardContext>();
-builder.Services.AddScoped<IRepository, Repository>();
 
 var app = builder.Build();
 
