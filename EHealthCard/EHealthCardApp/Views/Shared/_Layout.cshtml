@@ -47,6 +47,17 @@
 	</header>
 	<div class="container">
 		<main role="main" class="pb-3">
+			@if(message != null && message != string.Empty)
+			{
+				<div id="liveAlertPlaceholder">
+					<div>
+						<div class="alert alert-dark alert-dismissible" role="alert">
+							<div>@message</div>
+							 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					</div>
+				</div>
+			}
 			@RenderBody()
 		</main>
 	</div>
@@ -59,11 +70,6 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	@await RenderSectionAsync("Scripts", required: false)
-	<script type="text/javascript">
-		var message = '@message';
-		if (message)
-			alert(message);
-	</script>
+	@await RenderSectionAsync("Scripts", required: false)	
 </body>
 </html>

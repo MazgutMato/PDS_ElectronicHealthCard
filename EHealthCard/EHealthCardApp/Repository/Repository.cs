@@ -108,13 +108,10 @@ namespace EHealthCardApp.Repository
                 _dbContext.Cities.AddRange(cities.Values);
 
                 var res = _dbContext.SaveChanges();
-                if (res == 1)
+                if (res != cities.Count)
                 {
-                    result.message = "Successfully deleted!";
-                }
-                else
-                {
-                    result.message = "Added faild!";
+                    result.message = "Cities generated faild!";
+                    return result;
                 }
 
             }
