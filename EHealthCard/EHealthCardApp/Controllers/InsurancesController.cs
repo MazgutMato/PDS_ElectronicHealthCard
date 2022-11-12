@@ -49,8 +49,6 @@ namespace EHealthCardApp.Controllers
         // GET: Insurances/Create
         public IActionResult Create()
         {
-            ViewData["CompId"] = new SelectList(_context.InsuranceComps, "CompId", "CompId");
-            ViewData["PersonId"] = new SelectList(_context.People, "PersonId", "PersonId");
             return View();
         }
 
@@ -61,14 +59,16 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(insurance);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            } catch(Exception ex)
+            {
+                TempData["Message"] = "Data Creation Failed";
+                return View(insurance);
             }
-            ViewData["CompId"] = new SelectList(_context.InsuranceComps, "CompId", "CompId", insurance.CompId);
-            ViewData["PersonId"] = new SelectList(_context.People, "PersonId", "PersonId", insurance.PersonId);
             return View(insurance);
         }
 

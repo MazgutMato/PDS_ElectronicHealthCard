@@ -26,11 +26,6 @@ namespace EHealthCardApp.Controllers
             return View(new List<City>());
         }
 
-        public async Task<IActionResult> Search()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> SearchItems([Bind("Zip,CityName")] City city)
         {
             TempData["Message"] = "Corresponding Data Listed";
@@ -92,12 +87,22 @@ namespace EHealthCardApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(city);
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Data successfully";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(city);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Data Created";
+                    return RedirectToAction(nameof(Index));
+
+                } 
+                catch(Exception ex)
+                {
+                    TempData["Message"] = "Data Creation Failed";
+                    return View(city);
+                }
+                
             }            
-            TempData["Message"] = "Data are not valid";
+            TempData["Message"] = "Data Creation Failed";
             return View(city);
         }
 
@@ -149,7 +154,8 @@ namespace EHealthCardApp.Controllers
                 }
                 TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
-            }            
+            }
+            TempData["Message"] = "Data Edition Failed";
             return View(city);
         }
 

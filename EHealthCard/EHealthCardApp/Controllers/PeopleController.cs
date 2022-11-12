@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EHealthCardApp.Controllers
 {
@@ -58,12 +59,17 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PersonId,Zip,FirstName,LastName,Phone,Email")] Person person)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            } catch(Exception ex)
+            {
+                TempData["Message"] = "People Creation Failed";
             }
+            
+
             ViewData["Zip"] = new SelectList(_context.Cities, "Zip", "Zip", person.Zip);
             return View(person);
         }
@@ -154,14 +160,14 @@ namespace EHealthCardApp.Controllers
             {
                 _context.People.Remove(person);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PersonExists(string id)
         {
-          return _context.People.Any(e => e.PersonId == id);
+            return _context.People.Any(e => e.PersonId == id);
         }
     }
 }

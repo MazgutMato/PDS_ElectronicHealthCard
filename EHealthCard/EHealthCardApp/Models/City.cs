@@ -8,7 +8,7 @@ public partial class City
 {
     [Required]
     [StringLength(5, 
-        ErrorMessage = "Zip code has to be 5 chars long!",
+        ErrorMessage = "Zip code has to be 5 chars long",
         MinimumLength = 5)]
     public string Zip { get; set; } = null!;
 
