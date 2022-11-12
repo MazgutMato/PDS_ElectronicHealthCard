@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
+using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {
@@ -21,7 +23,40 @@ namespace EHealthCardApp.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Cities.ToListAsync());
+            return View(new List<City>());
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchItems([Bind("Zip,CityName")] City city)
+        {
+            TempData["Message"] = "Corresponding Data Listed";
+            if (city.Zip.IsNullOrEmpty() && city.CityName.IsNullOrEmpty())
+            {
+                return View("Index", new List<City>());
+            }
+
+            if (city.Zip.IsNullOrEmpty())
+            {
+                return View("Index", await _context.Cities
+                          .Where(i => i.CityName == city.CityName)
+                          .ToListAsync());
+            }
+
+            if (city.CityName.IsNullOrEmpty())
+            {
+                return View("Index", await _context.Cities
+                          .Where(i => i.Zip == city.Zip)
+                          .ToListAsync());
+            }
+
+            return View("Index", await _context.Cities
+                          .Where(i => i.Zip == city.Zip)
+                          .Where(i => i.CityName == city.CityName)
+                          .ToListAsync());
         }
 
         // GET: Cities/Details/5
@@ -59,8 +94,10 @@ namespace EHealthCardApp.Controllers
             {
                 _context.Add(city);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Data successfully";
                 return RedirectToAction(nameof(Index));
-            }
+            }            
+            TempData["Message"] = "Data are not valid";
             return View(city);
         }
 
@@ -110,8 +147,9 @@ namespace EHealthCardApp.Controllers
                         throw;
                     }
                 }
+                TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
-            }
+            }            
             return View(city);
         }
 
@@ -129,7 +167,6 @@ namespace EHealthCardApp.Controllers
             {
                 return NotFound();
             }
-
             return View(city);
         }
 
@@ -147,14 +184,15 @@ namespace EHealthCardApp.Controllers
             {
                 _context.Cities.Remove(city);
             }
-            
+
             await _context.SaveChangesAsync();
+            TempData["Message"] = "Data Deleted";
             return RedirectToAction(nameof(Index));
         }
 
         private bool CityExists(string id)
         {
-          return _context.Cities.Any(e => e.Zip == id);
+            return _context.Cities.Any(e => e.Zip == id);
         }
     }
 }

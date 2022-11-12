@@ -1,0 +1,32 @@
+﻿@model EHealthCardApp.Models.City
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Search Cities</h1>
+<hr />
+<form asp-action="SearchItems">
+    <div class="row from-group">
+        <div class="col">
+            <label asp-for="Zip" class="control-label"></label>
+            <input asp-for="Zip" class="form-control"/>
+            <span asp-validation-for="Zip" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <label asp-for="CityName" class="control-label"></label>
+            <input asp-for="CityName" class="form-control" />
+            <span asp-validation-for="CityName" class="text-danger"></span>
+        </div>
+        <div class="col align-self-center">
+            <input type="submit" value="List" class="btn btn-primary" />
+        </div>     
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@
