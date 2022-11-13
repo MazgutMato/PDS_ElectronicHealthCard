@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {
@@ -21,14 +22,55 @@ namespace EHealthCardApp.Controllers
         // GET: Insurances
         public async Task<IActionResult> Index()
         {
-            var eHealthCardContext = _context.Insurances.Include(i => i.Comp).Include(i => i.Person);
-            return View(await eHealthCardContext.ToListAsync());
+            //var eHealthCardContext = _context.Insurances.Include(p => p.Comp).Include(p => p.Person);
+            //return View(await eHealthCardContext.ToListAsync());
+
+            return View(new List<Insurance>());
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchItems([Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
+        {
+            TempData["Message"] = "Corresponding Data Listed";
+            if (insurance.PersonId.IsNullOrEmpty() && insurance.CompId.IsNullOrEmpty())
+            {
+                return View("Index", new List<InsuranceComp>());
+            }
+
+            if (insurance.CompId.IsNullOrEmpty())
+            {
+                return View("Index", await _context.Insurances
+                          .Include(p => p.Comp)
+                          .Include(p => p.Person)
+                          .Where(i => i.PersonId == insurance.PersonId)
+                          .ToListAsync());
+            }
+
+            if (insurance.PersonId.IsNullOrEmpty())
+            {
+                return View("Index", await _context.Insurances
+                          .Include(p => p.Comp)
+                          .Include(p => p.Person)
+                          .Where(i => i.CompId == insurance.CompId)
+                          .ToListAsync());
+            }
+
+            return View("Index", await _context.Insurances
+                          .Include(p => p.Comp)
+                          .Include(p => p.Person)
+                          .Where(i => i.CompId == insurance.CompId)
+                          .Where(i => i.PersonId == insurance.PersonId)
+                          .ToListAsync());
         }
 
         // GET: Insurances/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(Insurance p_insurance)
         {
-            if (id == null || _context.Insurances == null)
+            if (_context.Insurances == null)
             {
                 return NotFound();
             }
@@ -36,8 +78,10 @@ namespace EHealthCardApp.Controllers
             var insurance = await _context.Insurances
                 .Include(i => i.Comp)
                 .Include(i => i.Person)
-                .FirstOrDefaultAsync(m => m.PersonId == id);
-
+                .Where(i => i.PersonId == p_insurance.PersonId)
+                .Where(i => i.CompId == p_insurance.CompId)
+                .Where(i => i.DateStart == p_insurance.DateStart)
+                .FirstOrDefaultAsync();
             if (insurance == null)
             {
                 return NotFound();
@@ -63,30 +107,31 @@ namespace EHealthCardApp.Controllers
             {
                 _context.Add(insurance);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Created";
                 return RedirectToAction(nameof(Index));
-            } catch(Exception ex)
-            {
-                TempData["Message"] = "Data Creation Failed";
-                return View(insurance);
             }
+            catch (Exception ex)
+            {
+
+            }
+            TempData["Message"] = "Data Creation Failed";
             return View(insurance);
         }
 
         // GET: Insurances/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(Insurance p_insurance)
         {
-            if (id == null || _context.Insurances == null)
+            if (_context.Insurances == null)
             {
                 return NotFound();
             }
 
-            var insurance = await _context.Insurances.FindAsync(id);
+            var insurance = await _context.Insurances.
+                FindAsync(p_insurance.PersonId, p_insurance.CompId, p_insurance.DateStart);
             if (insurance == null)
             {
                 return NotFound();
             }
-            ViewData["CompId"] = new SelectList(_context.InsuranceComps, "CompId", "CompId", insurance.CompId);
-            ViewData["PersonId"] = new SelectList(_context.People, "PersonId", "PersonId", insurance.PersonId);
             return View(insurance);
         }
 
@@ -97,40 +142,25 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
-            if (id != insurance.PersonId)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(insurance);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!InsuranceExists(insurance.PersonId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(insurance);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompId"] = new SelectList(_context.InsuranceComps, "CompId", "CompId", insurance.CompId);
-            ViewData["PersonId"] = new SelectList(_context.People, "PersonId", "PersonId", insurance.PersonId);
+            catch (DbUpdateConcurrencyException)
+            {
+
+            }
+            TempData["Message"] = "Data Edition Failed";
             return View(insurance);
         }
 
         // GET: Insurances/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Insurance p_insurance)
         {
-            if (id == null || _context.Insurances == null)
+            if (_context.Insurances == null)
             {
                 return NotFound();
             }
@@ -138,7 +168,10 @@ namespace EHealthCardApp.Controllers
             var insurance = await _context.Insurances
                 .Include(i => i.Comp)
                 .Include(i => i.Person)
-                .FirstOrDefaultAsync(m => m.PersonId == id);
+                .Where(i => i.PersonId == p_insurance.PersonId)
+                .Where(i => i.CompId == p_insurance.CompId)
+                .Where(i => i.DateStart == p_insurance.DateStart)
+                .FirstOrDefaultAsync();
             if (insurance == null)
             {
                 return NotFound();
@@ -150,25 +183,24 @@ namespace EHealthCardApp.Controllers
         // POST: Insurances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id, [Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
             if (_context.Insurances == null)
             {
                 return Problem("Entity set 'EHealthCardContext.Insurances'  is null.");
             }
-            var insurance = await _context.Insurances.FindAsync(id);
             if (insurance != null)
             {
+                TempData["Message"] = "Data Deleted";
                 _context.Insurances.Remove(insurance);
             }
-            
+            else
+            {
+                TempData["Message"] = "Data Deletion Failed";
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool InsuranceExists(string id)
-        {
-          return _context.Insurances.Any(e => e.PersonId == id);
         }
     }
 }

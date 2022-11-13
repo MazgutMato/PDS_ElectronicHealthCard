@@ -7,6 +7,7 @@ namespace EHealthCardApp.Models;
 public partial class InsuranceComp
 {
     [Required]
+    [Key]
     [StringLength(3,
         ErrorMessage = "Company id has to be 3 chars long",
         MinimumLength = 3)]

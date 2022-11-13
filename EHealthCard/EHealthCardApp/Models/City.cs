@@ -7,6 +7,7 @@ namespace EHealthCardApp.Models;
 public partial class City
 {
     [Required]
+    [Key]
     [StringLength(5, 
         ErrorMessage = "Zip code has to be 5 chars long",
         MinimumLength = 5)]

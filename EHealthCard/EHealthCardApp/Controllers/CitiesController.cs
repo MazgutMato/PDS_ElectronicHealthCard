@@ -23,7 +23,11 @@ namespace EHealthCardApp.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-            return View(new List<City>());
+            return View( new List<City>());
+        }
+        public async Task<IActionResult> Search()
+        {
+            return View();
         }
 
         public async Task<IActionResult> SearchItems([Bind("Zip,CityName")] City city)
@@ -188,11 +192,15 @@ namespace EHealthCardApp.Controllers
             var city = await _context.Cities.FindAsync(id);
             if (city != null)
             {
+                TempData["Message"] = "Data Deleted";
                 _context.Cities.Remove(city);
+            } else
+            {
+                TempData["Message"] = "Data Deletion Failed";
             }
 
-            await _context.SaveChangesAsync();
-            TempData["Message"] = "Data Deleted";
+            
+            await _context.SaveChangesAsync();            
             return RedirectToAction(nameof(Index));
         }
 

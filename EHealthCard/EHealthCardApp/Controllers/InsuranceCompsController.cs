@@ -100,8 +100,7 @@ namespace EHealthCardApp.Controllers
                 }
                 catch(Exception ex)
                 {
-                    TempData["Message"] = "Data Creation Failed";
-                    return View(insuranceComp);
+                    
                 }
 
                 
@@ -193,11 +192,14 @@ namespace EHealthCardApp.Controllers
             var insuranceComp = await _context.InsuranceComps.FindAsync(id);
             if (insuranceComp != null)
             {
+                TempData["Message"] = "Data Deleted";
                 _context.InsuranceComps.Remove(insuranceComp);
+            } else
+            {
+                TempData["Message"] = "Data Deletion Failed";
             }
 
-            await _context.SaveChangesAsync();
-            TempData["Message"] = "Data Deleted";
+            await _context.SaveChangesAsync();           
             return RedirectToAction(nameof(Index));
         }
 

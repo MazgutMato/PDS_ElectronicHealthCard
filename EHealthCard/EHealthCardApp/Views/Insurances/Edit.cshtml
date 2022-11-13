@@ -1,7 +1,6 @@
 ﻿@model EHealthCardApp.Models.Insurance
-
 @{
-    ViewData["Title"] = "Edit";
+    var temp_Date_start = Model.DateStart;
 }
 
 <h1>Edit</h1>
@@ -14,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="PersonId" />
             <input type="hidden" asp-for="CompId" />
-            <input type="hidden" asp-for="DateStart" />
+            <input type="hidden" asp-for="DateStart" value="@temp_Date_start" />
             <div class="form-group">
                 <label asp-for="DateEnd" class="control-label"></label>
                 <input asp-for="DateEnd" class="form-control" />
