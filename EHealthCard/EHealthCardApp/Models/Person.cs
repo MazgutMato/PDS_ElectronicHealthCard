@@ -7,7 +7,7 @@ namespace EHealthCardApp.Models;
 public partial class Person
 {
     [Required]
-    [StringLength(10, ErrorMessage = "Person ID has to be 10 chars long.", MinimumLength = 10)]
+    [StringLength(10, ErrorMessage = "Person ID has to be 10 chars long", MinimumLength = 10)]
     public string PersonId { get; set; } = null!;
 
     [Required]

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {
@@ -21,7 +22,40 @@ namespace EHealthCardApp.Controllers
         // GET: InsuranceComps
         public async Task<IActionResult> Index()
         {
-              return View(await _context.InsuranceComps.ToListAsync());
+            return View(new List<InsuranceComp>());
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SearchItems([Bind("CompId,CompName")] InsuranceComp insuranceComp)
+        {
+            TempData["Message"] = "Corresponding Data Listed";
+            if (insuranceComp.CompId.IsNullOrEmpty() && insuranceComp.CompName.IsNullOrEmpty())
+            {
+                return View("Index", new List<InsuranceComp>());
+            }
+
+            if (insuranceComp.CompId.IsNullOrEmpty())
+            {
+                return View("Index", await _context.InsuranceComps
+                          .Where(i => i.CompName == insuranceComp.CompName)
+                          .ToListAsync());
+            }
+
+            if (insuranceComp.CompName.IsNullOrEmpty())
+            {
+                return View("Index", await _context.InsuranceComps
+                          .Where(i => i.CompId == insuranceComp.CompId)
+                          .ToListAsync());
+            }
+
+            return View("Index", await _context.InsuranceComps
+                          .Where(i => i.CompId == insuranceComp.CompId)
+                          .Where(i => i.CompName == insuranceComp.CompName)
+                          .ToListAsync());
         }
 
         // GET: InsuranceComps/Details/5
@@ -57,10 +91,22 @@ namespace EHealthCardApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(insuranceComp);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(insuranceComp);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Data Created";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch(Exception ex)
+                {
+                    TempData["Message"] = "Data Creation Failed";
+                    return View(insuranceComp);
+                }
+
+                
             }
+            TempData["Message"] = "Data Creation Failed";
             return View(insuranceComp);
         }
 
@@ -110,8 +156,10 @@ namespace EHealthCardApp.Controllers
                         throw;
                     }
                 }
+                TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
+            TempData["Message"] = "Data Edition Failed";
             return View(insuranceComp);
         }
 
@@ -147,14 +195,15 @@ namespace EHealthCardApp.Controllers
             {
                 _context.InsuranceComps.Remove(insuranceComp);
             }
-            
+
             await _context.SaveChangesAsync();
+            TempData["Message"] = "Data Deleted";
             return RedirectToAction(nameof(Index));
         }
 
         private bool InsuranceCompExists(string id)
         {
-          return _context.InsuranceComps.Any(e => e.CompId == id);
+            return _context.InsuranceComps.Any(e => e.CompId == id);
         }
     }
 }

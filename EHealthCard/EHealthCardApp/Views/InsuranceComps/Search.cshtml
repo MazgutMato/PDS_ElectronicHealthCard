@@ -1,0 +1,32 @@
+﻿@model EHealthCardApp.Models.InsuranceComp
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Search Insurance Companies</h1>
+<hr />
+<form asp-action="SearchItems">
+    <div class="row from-group">
+        <div class="col">
+            <label asp-for="CompId" class="control-label"></label>
+            <input asp-for="CompId" class="form-control"/>
+            <span asp-validation-for="CompId" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <label asp-for="CompName" class="control-label"></label>
+            <input asp-for="CompName" class="form-control" />
+            <span asp-validation-for="CompName" class="text-danger"></span>
+        </div>
+        <div class="col align-self-center">
+            <input type="submit" value="List" class="btn btn-primary" />
+        </div>     
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@
