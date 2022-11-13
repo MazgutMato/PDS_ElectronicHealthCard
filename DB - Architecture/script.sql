@@ -1,6 +1,6 @@
 ﻿/*
-Created: 5. 11. 2022
-Modified: 11. 11. 2022
+Created: 05.11.2022
+Modified: 11.11.2022
 Model: SP - database
 Database: MS SQL Server 2019
 */
@@ -118,6 +118,7 @@ go
 
 CREATE TABLE [payment]
 (
+ [payment_id] Int IDENTITY NOT NULL,
  [hospital_name] Varchar(20) NOT NULL,
  [comp_id] Char(3) NOT NULL,
  [payment_date] Date NOT NULL,
@@ -128,7 +129,7 @@ go
 
 -- Add keys for table payment
 
-ALTER TABLE [payment] ADD CONSTRAINT [PK_payment] PRIMARY KEY ([hospital_name],[comp_id])
+ALTER TABLE [payment] ADD CONSTRAINT [PK_payment] PRIMARY KEY ([hospital_name],[comp_id],[payment_id])
 go
 
 -- Table diagnoses_type

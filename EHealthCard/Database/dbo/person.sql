@@ -1,6 +1,6 @@
 ﻿/*
-Created: 5. 11. 2022
-Modified: 11. 11. 2022
+Created: 05.11.2022
+Modified: 11.11.2022
 Model: SP - database
 Database: MS SQL Server 2019
 */

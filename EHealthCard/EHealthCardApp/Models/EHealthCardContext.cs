@@ -225,7 +225,7 @@ public partial class EHealthCardContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => new { e.HospitalName, e.CompId });
+            entity.HasKey(e => new { e.HospitalName, e.CompId, e.PaymentId });
 
             entity.ToTable("payment");
 
@@ -238,6 +238,9 @@ public partial class EHealthCardContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("comp_id");
+            entity.Property(e => e.PaymentId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("payment_id");
             entity.Property(e => e.Details)
                 .HasColumnType("xml")
                 .HasColumnName("details");

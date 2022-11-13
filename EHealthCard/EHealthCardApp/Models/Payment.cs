@@ -5,6 +5,8 @@ namespace EHealthCardApp.Models;
 
 public partial class Payment
 {
+    public int PaymentId { get; set; }
+
     public string HospitalName { get; set; } = null!;
 
     public string CompId { get; set; } = null!;

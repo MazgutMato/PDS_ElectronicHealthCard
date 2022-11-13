@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text;
+using System.Xml;
 
 namespace EHealthCardApp.Controllers
 {
@@ -93,7 +95,7 @@ namespace EHealthCardApp.Controllers
             //Cities
             var count = 0;
             var cities = new List<City>();
-            while (count < 10000)
+            while (count < 100)
             {
                 var city = new City();
                 city.Zip = this.RandomString("0123456789", 5, 5, false, false);
@@ -115,11 +117,12 @@ namespace EHealthCardApp.Controllers
                     cities.Add(city);
                 }
             }
+            await _context.SaveChangesAsync();
 
             //People
             count = 0;
             var people = new List<Person>();
-            while (count != 100000)
+            while (count != 1000)
             {
                 var person = new Person();
                 person.PersonId = this.RandomString("0123456789", 10, 10, false, false);
@@ -146,11 +149,12 @@ namespace EHealthCardApp.Controllers
                     people.Add(person);
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Hospitals
             var hospitals = new List<Hospital>();
             count = 0;
-            while (count != 10000)
+            while (count != 100)
             {
                 var hospital = new Hospital();
                 hospital.Capacity = random.Next(50, 500);
@@ -173,11 +177,12 @@ namespace EHealthCardApp.Controllers
                     hospitals.Add(hospital);
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Insurance companies
             var companies = new List<InsuranceComp>();
             count = 0;
-            while (count != 100)
+            while (count != 10)
             {
                 var comp = new InsuranceComp();
                 comp.CompId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 3, true, true);
@@ -199,10 +204,11 @@ namespace EHealthCardApp.Controllers
                     companies.Add(comp);
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Incurencies ended
             count = 0;
-            while (count != 60000)
+            while (count != 600)
             {
                 var person = people[random.Next(people.Count)];
                 var comp = companies[random.Next(companies.Count)];
@@ -214,6 +220,7 @@ namespace EHealthCardApp.Controllers
                 var starDate = DateTime.Now.AddDays(-days);
                 var endDate = DateTime.Now.AddDays(-random.Next(days));
                 insurance.DateStart = starDate;
+                insurance.DateEnd = endDate;
                 var res = false;
                 try
                 {
@@ -230,12 +237,15 @@ namespace EHealthCardApp.Controllers
                     count++;
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Incurencies actual
+            var NotInsured = new List<Person>(people);
+            var Insured = new List<Person>();
             count = 0;
-            while (count != 80000)
+            while (count != 800)
             {
-                var person = people[random.Next(people.Count)];
+                var person = NotInsured[random.Next(NotInsured.Count)];
                 var comp = companies[random.Next(companies.Count)];
 
                 var insurance = new Insurance();
@@ -249,7 +259,7 @@ namespace EHealthCardApp.Controllers
                 var res = false;
                 try
                 {
-                    await _context.AddAsync(insurance);
+                    await _context.AddAsync(insurance);                    
                     res = true;
                 }
                 catch (Exception ex)
@@ -259,16 +269,81 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
+                    NotInsured.Remove(person);
+                    Insured.Add(person);
                     count++;
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Payments
+            count = 0;
+            while (count != 1000)
+            {
+                var hospital = hospitals[random.Next(hospitals.Count)];
+                var comp = companies[random.Next(companies.Count)];
+
+                var payment = new Payment();
+                payment.HospitalName = hospital.HospitalName;
+                payment.CompId = comp.CompId;
+
+                int days = random.Next(365 * yearsBack);
+                var date = DateTime.Now.AddDays(-days);
+                var period = date.AddDays(-random.Next(365));
+                payment.PaymentDate = date;
+                payment.PaymentPeriod = new DateTime(period.Year, period.Month,1);
+                var XmlDetails = new StringBuilder();
+                using (XmlWriter writer = XmlWriter.Create(XmlDetails))
+                {
+                    writer.WriteStartElement("Payment");
+
+                    writer.WriteStartElement("Sender");
+                    writer.WriteAttributeString("CompId", comp.CompId);
+                    writer.WriteElementString("BankName",
+                        this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, true, false));
+                    writer.WriteElementString("IBAN",
+                        this.RandomString("abcdefghijklmnopqrstuvwxyz", 2, 2, true, true) +
+                        this.RandomString("0123456789", 22, 22, false, false));
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("Reciever");
+                    writer.WriteAttributeString("HospName", hospital.HospitalName);
+                    writer.WriteElementString("BankName",
+                        this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, true, false));
+                    writer.WriteElementString("IBAN",
+                        this.RandomString("abcdefghijklmnopqrstuvwxyz", 2, 2, true, true) +
+                        this.RandomString("0123456789", 22, 22, false, false));
+                    writer.WriteEndElement();
+
+                    writer.WriteElementString("Amount",
+                       random.Next(500, 10000).ToString());
+
+                    writer.WriteEndElement();
+                }
+                payment.Details = XmlDetails.ToString();
+                
+                var res = false;
+                try
+                {
+                    await _context.AddAsync(payment);
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    _context.Remove(payment);
+                    res = false;
+                }
+                if (res)
+                {
+                    count++;
+                }
+            }
+            await _context.SaveChangesAsync();
 
             //DiagnosesTypes
             var diagnosesTypes = new List<DiagnosesType>();
             count = 0;
-            while (count != 10000)
+            while (count != 100)
             {
                 var type = new DiagnosesType();
                 type.DiagnosisId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 5, true, true);
@@ -291,12 +366,13 @@ namespace EHealthCardApp.Controllers
                     diagnosesTypes.Add(type);
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Hospitalizations ended
             count = 0;
-            while (count != 80000)
+            while (count != 800)
             {
-                var person = people[random.Next(people.Count)];
+                var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
 
                 var hospitalization = new Hospitalization();
@@ -350,12 +426,13 @@ namespace EHealthCardApp.Controllers
                     }
                 }
             }
+            await _context.SaveChangesAsync();
 
             //Hospitalizations actual
             count = 0;
-            while (count != 20000)
+            while (count != 200)
             {
-                var person = people[random.Next(people.Count)];
+                var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
 
                 var hospitalization = new Hospitalization();
@@ -368,7 +445,11 @@ namespace EHealthCardApp.Controllers
                 var res = false;
                 try
                 {
-                    await _context.AddAsync(hospitalization);
+                    await _context.AddAsync(hospitalization);    
+                    if(hospital.Capacity < 0)
+                    {
+                        throw new Exception();
+                    }
                     res = true;
                 }
                 catch (Exception ex)
@@ -378,6 +459,8 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
+                    Insured.Remove(person);
+                    hospital.Capacity --;
                     count++;
 
                     //Diagnoses
@@ -407,8 +490,8 @@ namespace EHealthCardApp.Controllers
                     }
                 }
             }
-
             await _context.SaveChangesAsync();
+
             TempData["Message"] = "Data successfully generated!";
             return RedirectToAction(nameof(Index));
         }
