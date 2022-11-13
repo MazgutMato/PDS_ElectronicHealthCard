@@ -8,6 +8,7 @@ namespace EHealthCardApp.Controllers
     public class DatabaseController : Controller
     {
         private readonly EHealthCardContext _context;
+        const int yearsBack = 50;
         public DatabaseController(EHealthCardContext context)
         {
             _context = context;
@@ -18,13 +19,23 @@ namespace EHealthCardApp.Controllers
         }
         private async Task DeleteDataAsync()
 		{
-            //Delete hospitals
+            //Diagnoses
+            _context.Diagnoses.RemoveRange(_context.Diagnoses);
+            //Diagnoses types
+            _context.DiagnosesTypes.RemoveRange(_context.DiagnosesTypes);
+            //Hospitalizations
+            _context.Hospitalizations.RemoveRange(_context.Hospitalizations);
+            //Payments
+            _context.Payments.RemoveRange(_context.Payments);
+            //Insurances
+            _context.Insurances.RemoveRange(_context.Insurances);
+            //Companies
             _context.InsuranceComps.RemoveRange(_context.InsuranceComps);
-            //Delete hospitals
+            //Hospitals
             _context.Hospitals.RemoveRange(_context.Hospitals);
-            //Delete people
+            //People
             _context.People.RemoveRange(_context.People);
-            //Delete cities
+            //Cities
             _context.Cities.RemoveRange(_context.Cities);
 
             await _context.SaveChangesAsync();
@@ -79,10 +90,10 @@ namespace EHealthCardApp.Controllers
 
             Random random = new Random();
 
-            //Generate cities
-            var number = 0;
+            //Cities
+            var count = 0;
             var cities = new List<City>();
-            while (number < 10000)
+            while (count < 10000)
             {
                 var city = new City();
                 city.Zip = this.RandomString("0123456789", 5, 5, false, false);
@@ -100,15 +111,15 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
                     cities.Add(city);
                 }
             }
 
-            ////Generate people
-            number = 0;
+            //People
+            count = 0;
             var people = new List<Person>();
-            while (number != 100000)
+            while (count != 100000)
             {
                 var person = new Person();
                 person.PersonId = this.RandomString("0123456789", 10, 10, false, false);
@@ -131,15 +142,15 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
                     people.Add(person);
                 }
             }
 
-            //Generate hospitals
+            //Hospitals
             var hospitals = new List<Hospital>();
-            number = 0;
-            while (number != 10000)
+            count = 0;
+            while (count != 10000)
             {
                 var hospital = new Hospital();
                 hospital.Capacity = random.Next(50, 500);
@@ -158,15 +169,15 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
                     hospitals.Add(hospital);
                 }
             }
 
-            //Generate insurance companies
+            //Insurance companies
             var companies = new List<InsuranceComp>();
-            number = 0;
-            while (number != 100)
+            count = 0;
+            while (count != 100)
             {
                 var comp = new InsuranceComp();
                 comp.CompId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 3, true, true);
@@ -184,14 +195,14 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
                     companies.Add(comp);
                 }
             }
 
-            //Generate incurencies ended
-            number = 0;
-            while (number != 60000)
+            //Incurencies ended
+            count = 0;
+            while (count != 60000)
             {
                 var person = people[random.Next(people.Count)];
                 var comp = companies[random.Next(companies.Count)];
@@ -199,7 +210,7 @@ namespace EHealthCardApp.Controllers
                 var insurance = new Insurance();
                 insurance.PersonId = person.PersonId;
                 insurance.CompId = comp.CompId;
-                int days = random.Next(365 * 100);
+                int days = random.Next(365 * yearsBack);
                 var starDate = DateTime.Now.AddDays(-days);
                 var endDate = DateTime.Now.AddDays(-random.Next(days));
                 insurance.DateStart = starDate;
@@ -216,13 +227,13 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
                 }
             }
 
-            //Generate incurencies
-            number = 0;
-            while (number != 80000)
+            //Incurencies actual
+            count = 0;
+            while (count != 80000)
             {
                 var person = people[random.Next(people.Count)];
                 var comp = companies[random.Next(companies.Count)];
@@ -230,19 +241,11 @@ namespace EHealthCardApp.Controllers
                 var insurance = new Insurance();
                 insurance.PersonId = person.PersonId;
                 insurance.CompId = comp.CompId;
-                if (random.Next(2) == 0)
-                {
-                    int days = random.Next(365 * 100);
-                    var starDate = DateTime.Now.AddDays(-days);
-                    insurance.DateStart = starDate;
-                }
-                else
-                {
-                    int days = random.Next(365 * 100);
-                    var starDate = DateTime.Now.AddDays(-days);
-                    var endDate = DateTime.Now.AddDays(-random.Next(days));
-                    insurance.DateStart = starDate;
-                }
+
+                int days = random.Next(365 * yearsBack);
+                var starDate = DateTime.Now.AddDays(-days);
+                insurance.DateStart = starDate;
+
                 var res = false;
                 try
                 {
@@ -256,7 +259,152 @@ namespace EHealthCardApp.Controllers
                 }
                 if (res)
                 {
-                    number++;
+                    count++;
+                }
+            }
+
+            //Payments
+
+            //DiagnosesTypes
+            var diagnosesTypes = new List<DiagnosesType>();
+            count = 0;
+            while (count != 10000)
+            {
+                var type = new DiagnosesType();
+                type.DiagnosisId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 5, true, true);
+                type.Description = this.RandomString("abcdefghijklmnopqrstuvwxyz", 10, 40, true, false);
+                type.DailyCosts = random.Next(10, 100);
+                var res = false;
+                try
+                {
+                    await _context.AddAsync(type);
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    _context.Remove(type);
+                    res = false;
+                }
+                if (res)
+                {
+                    count++;
+                    diagnosesTypes.Add(type);
+                }
+            }
+
+            //Hospitalizations ended
+            count = 0;
+            while (count != 80000)
+            {
+                var person = people[random.Next(people.Count)];
+                var hospital = hospitals[random.Next(hospitals.Count)];
+
+                var hospitalization = new Hospitalization();
+                hospitalization.HospitalName = hospital.HospitalName;
+                hospitalization.PersonId = person.PersonId;
+                int days = random.Next(365 * yearsBack);
+                var starDate = DateTime.Now.AddDays(-days);
+                var endDate = DateTime.Now.AddDays(-random.Next(days));
+                hospitalization.DateStart = starDate;
+                hospitalization.DateEnd = endDate;
+                
+                var res = false;
+                try
+                {
+                    await _context.AddAsync(hospitalization);
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    _context.Remove(hospitalization);
+                    res = false;
+                }
+                if (res)
+                {
+                    count++;
+
+                    //Diagnoses
+                    var diagnosesCount = random.Next(1, 3);
+                    while(diagnosesCount > 0)
+                    {
+                        var hospDiagnoze = new Diagnosis();
+                        hospDiagnoze.HospitalName = hospitalization.HospitalName;
+                        hospDiagnoze.PersonId = hospitalization.PersonId;
+                        hospDiagnoze.DateStart = hospitalization.DateStart;
+                        hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+                        var resDiagnose = false;
+                        try
+                        {
+                            await _context.AddAsync(hospDiagnoze);
+                            resDiagnose = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            _context.Remove(hospDiagnoze);
+                            resDiagnose = false;
+                        }
+                        if (resDiagnose)
+                        {
+                            diagnosesCount--;                            
+                        }
+                    }
+                }
+            }
+
+            //Hospitalizations actual
+            count = 0;
+            while (count != 20000)
+            {
+                var person = people[random.Next(people.Count)];
+                var hospital = hospitals[random.Next(hospitals.Count)];
+
+                var hospitalization = new Hospitalization();
+                hospitalization.HospitalName = hospital.HospitalName;
+                hospitalization.PersonId = person.PersonId;
+                int days = random.Next(365 * yearsBack);
+                var starDate = DateTime.Now.AddDays(-days);
+                hospitalization.DateStart = starDate;
+
+                var res = false;
+                try
+                {
+                    await _context.AddAsync(hospitalization);
+                    res = true;
+                }
+                catch (Exception ex)
+                {
+                    _context.Remove(hospitalization);
+                    res = false;
+                }
+                if (res)
+                {
+                    count++;
+
+                    //Diagnoses
+                    var diagnosesCount = random.Next(1, 3);
+                    while (diagnosesCount > 0)
+                    {
+                        var hospDiagnoze = new Diagnosis();
+                        hospDiagnoze.HospitalName = hospitalization.HospitalName;
+                        hospDiagnoze.PersonId = hospitalization.PersonId;
+                        hospDiagnoze.DateStart = hospitalization.DateStart;
+                        hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+                        var resDiagnose = false;
+                        try
+                        {
+                            await _context.AddAsync(hospDiagnoze);
+                            resDiagnose = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            _context.Remove(hospDiagnoze);
+                            resDiagnose = false;
+                        }
+                        if (resDiagnose)
+                        {
+                            diagnosesCount--;
+                        }
+                    }
                 }
             }
 
