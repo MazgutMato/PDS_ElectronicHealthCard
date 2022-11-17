@@ -17,7 +17,7 @@ public partial class Hospital
         MinimumLength = 5)]
     public string Zip { get; set; } = null!;
     [Required]
-    [Range(1,10000)]
+    [Range(1,int.MaxValue)]
     public int Capacity { get; set; }
 
     public virtual ICollection<Hospitalization> Hospitalizations { get; } = new List<Hospitalization>();

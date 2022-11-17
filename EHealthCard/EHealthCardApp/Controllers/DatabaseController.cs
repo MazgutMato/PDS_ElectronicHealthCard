@@ -299,7 +299,7 @@ namespace EHealthCardApp.Controllers
 
                     writer.WriteStartElement("Sender");
                     writer.WriteAttributeString("CompId", comp.CompId);
-                    writer.WriteElementString("BankName",
+                    writer.WriteElementString("Bank",
                         this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, true, false));
                     writer.WriteElementString("IBAN",
                         this.RandomString("abcdefghijklmnopqrstuvwxyz", 2, 2, true, true) +
@@ -308,7 +308,7 @@ namespace EHealthCardApp.Controllers
 
                     writer.WriteStartElement("Reciever");
                     writer.WriteAttributeString("HospName", hospital.HospitalName);
-                    writer.WriteElementString("BankName",
+                    writer.WriteElementString("Bank",
                         this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, true, false));
                     writer.WriteElementString("IBAN",
                         this.RandomString("abcdefghijklmnopqrstuvwxyz", 2, 2, true, true) +

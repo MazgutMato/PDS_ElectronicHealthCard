@@ -1,0 +1,86 @@
+﻿@model EHealthCardApp.Models.Payment
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <div class="row">
+        <div class="col">
+            <dl class="row">
+                <h4>Sender</h4>
+                <hr />
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.CompId)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.CompId)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.CompBank)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.CompBank)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.CompIban)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.CompIban)
+                </dd>
+            </dl>
+        </div>
+        <div class="col">
+            <dl class="row">
+                <h4>Reciever</h4>
+                <hr />
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.HospitalName)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.HospitalName)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.HospitalBank)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.HospitalBank)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.HospitalIban)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.HospitalIban)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <h4>Others</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.PaymentDate)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.PaymentPeriod)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.PaymentPeriod)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Amount)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", Model) |
+    <a asp-action="Index">Back to List</a>
+</div>

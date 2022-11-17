@@ -40,6 +40,7 @@ namespace EHealthCardApp.Controllers
             if (hospital.Zip.IsNullOrEmpty())
             {
                 return View("Index", await _context.Hospitals
+                          .Include(p => p.ZipNavigation)
                           .Where(i => i.HospitalName == hospital.HospitalName)
                           .ToListAsync());
             }
@@ -47,11 +48,13 @@ namespace EHealthCardApp.Controllers
             if (hospital.HospitalName.IsNullOrEmpty())
             {
                 return View("Index", await _context.Hospitals
+                          .Include(p => p.ZipNavigation)
                           .Where(i => i.Zip == hospital.Zip)
                           .ToListAsync());
             }
 
             return View("Index", await _context.Hospitals
+                          .Include(p => p.ZipNavigation)
                           .Where(i => i.Zip == hospital.Zip)
                           .Where(i => i.HospitalName == hospital.HospitalName)
                           .ToListAsync());
