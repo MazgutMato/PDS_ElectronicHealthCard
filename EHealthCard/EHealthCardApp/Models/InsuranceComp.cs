@@ -14,6 +14,7 @@ public partial class InsuranceComp
     public string CompId { get; set; } = null!;
 
     [Required]
+    [StringLength(30)]
     public string CompName { get; set; } = null!;
 
     public virtual ICollection<Insurance> Insurances { get; } = new List<Insurance>();

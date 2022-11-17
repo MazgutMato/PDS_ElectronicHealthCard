@@ -1,0 +1,56 @@
+﻿@model IEnumerable<EHealthCardApp.Models.Hospitalization>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Hospitalizations</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<p>
+    <a asp-action="Search">Search Hospitalizations</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HospitalName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateEnd)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.PersonId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HospitalName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateEnd)
+            </td>
+            <td>
+                    @Html.ActionLink("Edit", "Edit", item ) |
+                    @Html.ActionLink("Details", "Details", item) |
+                    @Html.ActionLink("Delete", "Delete", item)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

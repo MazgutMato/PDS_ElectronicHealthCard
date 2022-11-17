@@ -11,6 +11,7 @@ public partial class Person
     public string PersonId { get; set; } = null!;
 
     [Required]
+    [StringLength(5, ErrorMessage = "Zip Code has to be 5 chars long", MinimumLength = 5)]
     public string Zip { get; set; } = null!;
 
     [Required]

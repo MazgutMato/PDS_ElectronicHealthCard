@@ -22,9 +22,6 @@ namespace EHealthCardApp.Controllers
         // GET: Insurances
         public async Task<IActionResult> Index()
         {
-            //var eHealthCardContext = _context.Insurances.Include(p => p.Comp).Include(p => p.Person);
-            //return View(await eHealthCardContext.ToListAsync());
-
             return View(new List<Insurance>());
         }
 
@@ -38,7 +35,7 @@ namespace EHealthCardApp.Controllers
             TempData["Message"] = "Corresponding Data Listed";
             if (insurance.PersonId.IsNullOrEmpty() && insurance.CompId.IsNullOrEmpty())
             {
-                return View("Index", new List<InsuranceComp>());
+                return View("Index", new List<Insurance>());
             }
 
             if (insurance.CompId.IsNullOrEmpty())
@@ -149,7 +146,7 @@ namespace EHealthCardApp.Controllers
                 TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
 
             }
