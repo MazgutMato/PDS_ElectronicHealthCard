@@ -15,13 +15,15 @@ public partial class Person
     public string Zip { get; set; } = null!;
 
     [Required]
+    [StringLength(20)]
     public string FirstName { get; set; } = null!;
 
     [Required]
+    [StringLength(30)]
     public string LastName { get; set; } = null!;
-
+    [StringLength(16)]
     public string? Phone { get; set; }
-
+    [StringLength(40)]
     public string? Email { get; set; }
 
     public virtual ICollection<Hospitalization> Hospitalizations { get; } = new List<Hospitalization>();
