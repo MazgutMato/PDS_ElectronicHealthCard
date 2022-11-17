@@ -10,7 +10,7 @@ public partial class Hospitalization
     [StringLength(10, ErrorMessage = "Person ID has to be 10 chars long", MinimumLength = 10)]
     public string PersonId { get; set; } = null!;
     [Required]
-    [StringLength(20,ErrorMessage = "Person ID has to be 10 chars long")]
+    [StringLength(20)]
     public string HospitalName { get; set; } = null!;
     [Required]
     public DateTime DateStart { get; set; }

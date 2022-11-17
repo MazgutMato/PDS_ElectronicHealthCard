@@ -8,8 +8,7 @@ public partial class Hospital
 {
     [Required]
     [Key]
-    [StringLength(20,
-        ErrorMessage = "Hospital name has to be maximal 20 chars long")]
+    [StringLength(20)]
     public string HospitalName { get; set; } = null!;
     [Required]
     [StringLength(5,
