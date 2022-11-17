@@ -108,7 +108,7 @@ namespace EHealthCardApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = ex.Message;
+                TempData["Message"] = ex.InnerException.Message;
             }
             return View(hospitalization);
         }

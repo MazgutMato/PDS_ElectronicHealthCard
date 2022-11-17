@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Delete";
+    var temp_Date_start = Model.DateStart;
 }
 
 <h1>Delete</h1>
@@ -40,7 +41,7 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="PersonId" />
         <input type="hidden" asp-for="CompId" />
-        <input type="hidden" asp-for="DateStart" />
+        <input type="hidden" asp-for="DateStart" value="@temp_Date_start" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
