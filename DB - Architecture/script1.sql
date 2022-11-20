@@ -25,6 +25,7 @@ CREATE TABLE person(
 )
 /
 
+
 -- Create indexes for table person
 
 CREATE INDEX IX_Relationship2 ON person (ZIP)
@@ -53,8 +54,8 @@ ALTER TABLE insurance_comp ADD CONSTRAINT PK_insurance_comp PRIMARY KEY (comp_id
 CREATE TABLE hospital(
   hospital_name Varchar2(20 ) NOT NULL,
   ZIP Char(5 ) NOT NULL,
-  capacity Integer NOT NULL,
-  CONSTRAINT check_capacity CHECK (capacity > 0)
+  capacity Integer NOT NULL
+        CONSTRAINT check_capacity CHECK (capacity > 0)
 )
 /
 
