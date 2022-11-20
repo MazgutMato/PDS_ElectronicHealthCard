@@ -32,19 +32,19 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("Zip,CityName")] City city)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (city.Zip.IsNullOrEmpty() && city.CityName.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(city.Zip) && String.IsNullOrEmpty(city.CityName))
             {
                 return View("Index", new List<City>());
             }
 
-            if (city.Zip.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(city.Zip))
             {
                 return View("Index", await _context.Cities
                           .Where(i => i.CityName == city.CityName)
                           .ToListAsync());
             }
 
-            if (city.CityName.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(city.CityName))
             {
                 return View("Index", await _context.Cities
                           .Where(i => i.Zip == city.Zip)

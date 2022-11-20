@@ -31,12 +31,12 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("PersonId,HospitalName,DateStart,DateEnd")] Hospitalization hospitalization)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (hospitalization.PersonId.IsNullOrEmpty() && hospitalization.HospitalName.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(hospitalization.PersonId) && String.IsNullOrEmpty(hospitalization.HospitalName))
             {
                 return View("Index", new List<Hospitalization>());
             }
 
-            if (hospitalization.HospitalName.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(hospitalization.HospitalName))
             {
                 return View("Index", await _context.Hospitalizations
                           .Include(p => p.Person)
@@ -45,7 +45,7 @@ namespace EHealthCardApp.Controllers
                           .ToListAsync());
             }
 
-            if (hospitalization.PersonId.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(hospitalization.PersonId))
             {
                 return View("Index", await _context.Hospitalizations
                           .Include(p => p.Person)
