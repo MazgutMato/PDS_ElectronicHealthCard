@@ -1,7 +1,7 @@
-﻿/*
+/*
 Created: 20. 11. 2022
 Modified: 20. 11. 2022
-Model: Oracle 19c
+Model: SP - database
 Database: Oracle 19c
 */
 
@@ -116,6 +116,7 @@ ALTER TABLE hospitalization ADD CONSTRAINT PK_hospitalization PRIMARY KEY (date_
 -- Table payment
 
 CREATE TABLE payment(
+  payment_id Integer NOT NULL,
   hospital_name Varchar2(20 ) NOT NULL,
   comp_id Char(3 ) NOT NULL,
   payment_date Date NOT NULL,
@@ -126,7 +127,7 @@ CREATE TABLE payment(
 
 -- Add keys for table payment
 
-ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (hospital_name,comp_id)
+ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (hospital_name,comp_id,payment_id)
 /
 
 -- Table diagnoses_type
@@ -209,3 +210,8 @@ ALTER TABLE insurance ADD CONSTRAINT RelationshipPersonInsurance FOREIGN KEY (pe
 
 ALTER TABLE person ADD CONSTRAINT RelationshipCityPerson FOREIGN KEY (ZIP) REFERENCES city (ZIP)
 /
+
+
+
+
+
