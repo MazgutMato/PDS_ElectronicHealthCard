@@ -126,11 +126,11 @@ namespace EHealthCardApp.Controllers
             {
                 var person = new Person();
                 person.PersonId = this.RandomString("0123456789", 10, 10, false, false);
-                person.FirstName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
-                person.LastName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
-                person.Phone = "+4219" + this.RandomString("0123456789", 8, 8, false, false);
-                person.Email = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, false, false) + "@"
-                    + this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 8, false, false) + ".com";
+                //person.FirstName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
+                //person.LastName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
+                //person.Phone = "+4219" + this.RandomString("0123456789", 8, 8, false, false);
+                //person.Email = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, false, false) + "@"
+                //    + this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 8, false, false) + ".com";
                 person.Zip = cities[random.Next(cities.Count)].Zip;
                 var res = false;
                 try

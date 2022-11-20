@@ -1,308 +1,334 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EHealthCardApp.Models;
-
-public partial class EHealthCardContext : DbContext
+namespace EHealthCardApp.Models
 {
-    public EHealthCardContext()
+    public partial class EHealthCardContext : DbContext
     {
-    }
+        public EHealthCardContext()
+        {
+        }
 
-    public EHealthCardContext(DbContextOptions<EHealthCardContext> options)
-        : base(options)
-    {
-    }
+        public EHealthCardContext(DbContextOptions<EHealthCardContext> options)
+            : base(options)
+        {
+        }
 
-    public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<City> Cities { get; set; } = null!;
+        public virtual DbSet<DiagnosesType> DiagnosesTypes { get; set; } = null!;
+        public virtual DbSet<Diagnosis> Diagnoses { get; set; } = null!;
+        public virtual DbSet<Hospital> Hospitals { get; set; } = null!;
+        public virtual DbSet<Hospitalization> Hospitalizations { get; set; } = null!;
+        public virtual DbSet<Insurance> Insurances { get; set; } = null!;
+        public virtual DbSet<InsuranceComp> InsuranceComps { get; set; } = null!;
+        public virtual DbSet<Payment> Payments { get; set; } = null!;
+        public virtual DbSet<Person> People { get; set; } = null!;
 
-    public virtual DbSet<DiagnosesType> DiagnosesTypes { get; set; }
-
-    public virtual DbSet<Diagnosis> Diagnoses { get; set; }
-
-    public virtual DbSet<Hospital> Hospitals { get; set; }
-
-    public virtual DbSet<Hospitalization> Hospitalizations { get; set; }
-
-    public virtual DbSet<Insurance> Insurances { get; set; }
-
-    public virtual DbSet<InsuranceComp> InsuranceComps { get; set; }
-
-    public virtual DbSet<Payment> Payments { get; set; }
-
-    public virtual DbSet<Person> People { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DBEHealthCard;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseOracle("User Id=C##LOCAL;Password=oracle;Data Source=localhost:1521/xe;");
+            }
+        }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<City>(entity =>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            entity.HasKey(e => e.Zip);
+            modelBuilder.HasDefaultSchema("C##LOCAL")
+                .UseCollation("USING_NLS_COMP");
 
-            entity.ToTable("city");
+            modelBuilder.Entity<City>(entity =>
+            {
+                entity.HasKey(e => e.Zip);
 
-            entity.Property(e => e.Zip)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("ZIP");
-            entity.Property(e => e.CityName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("city_name");
-        });
+                entity.ToTable("CITY");
 
-        modelBuilder.Entity<DiagnosesType>(entity =>
-        {
-            entity.HasKey(e => e.DiagnosisId);
+                entity.Property(e => e.Zip)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("ZIP")
+                    .IsFixedLength();
 
-            entity.ToTable("diagnoses_type");
+                entity.Property(e => e.CityName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("CITY_NAME");
+            });
 
-            entity.Property(e => e.DiagnosisId)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("diagnosis_id");
-            entity.Property(e => e.DailyCosts)
-                .HasColumnType("money")
-                .HasColumnName("daily_costs");
-            entity.Property(e => e.Description)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("description");
-        });
+            modelBuilder.Entity<DiagnosesType>(entity =>
+            {
+                entity.HasKey(e => e.DiagnosisId);
 
-        modelBuilder.Entity<Diagnosis>(entity =>
-        {
-            entity.HasKey(e => new { e.DateStart, e.HospitalName, e.PersonId, e.DiagnosisId });
+                entity.ToTable("DIAGNOSES_TYPE");
 
-            entity.ToTable("diagnoses");
+                entity.Property(e => e.DiagnosisId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("DIAGNOSIS_ID")
+                    .IsFixedLength();
 
-            entity.Property(e => e.DateStart)
-                .HasColumnType("date")
-                .HasColumnName("date_start");
-            entity.Property(e => e.HospitalName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("hospital_name");
-            entity.Property(e => e.PersonId)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("person_id");
-            entity.Property(e => e.DiagnosisId)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("diagnosis_id");
-            entity.Property(e => e.Document)
-                .HasColumnType("image")
-                .HasColumnName("document");
+                entity.Property(e => e.DailyCosts)
+                    .HasColumnType("NUMBER(15,2)")
+                    .HasColumnName("DAILY_COSTS");
 
-            entity.HasOne(d => d.DiagnosisNavigation).WithMany(p => p.Diagnoses)
-                .HasForeignKey(d => d.DiagnosisId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship25");
+                entity.Property(e => e.Description)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("DESCRIPTION");
+            });
 
-            entity.HasOne(d => d.Hospitalization).WithMany(p => p.Diagnoses)
-                .HasForeignKey(d => new { d.DateStart, d.HospitalName, d.PersonId })
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship24");
-        });
+            modelBuilder.Entity<Diagnosis>(entity =>
+            {
+                entity.HasKey(e => new { e.DateStart, e.HospitalName, e.PersonId, e.DiagnosisId });
 
-        modelBuilder.Entity<Hospital>(entity =>
-        {
-            entity.HasKey(e => e.HospitalName);
+                entity.ToTable("DIAGNOSES");
 
-            entity.ToTable("hospital");
+                entity.Property(e => e.DateStart)
+                    .HasColumnType("DATE")
+                    .HasColumnName("DATE_START");
 
-            entity.HasIndex(e => e.Zip, "IX_Relationship9");
+                entity.Property(e => e.HospitalName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("HOSPITAL_NAME");
 
-            entity.Property(e => e.HospitalName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("hospital_name");
-            entity.Property(e => e.Capacity).HasColumnName("capacity");
-            entity.Property(e => e.Zip)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("ZIP");
+                entity.Property(e => e.PersonId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("PERSON_ID")
+                    .IsFixedLength();
 
-            entity.HasOne(d => d.ZipNavigation).WithMany(p => p.Hospitals)
-                .HasForeignKey(d => d.Zip)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship9");
-        });
+                entity.Property(e => e.DiagnosisId)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("DIAGNOSIS_ID")
+                    .IsFixedLength();
 
-        modelBuilder.Entity<Hospitalization>(entity =>
-        {
-            entity.HasKey(e => new { e.DateStart, e.HospitalName, e.PersonId });
+                entity.Property(e => e.Document)
+                    .HasColumnType("LONG RAW")
+                    .HasColumnName("DOCUMENT");
 
-            entity.ToTable("hospitalization", tb => tb.HasTrigger("hospitalizationInsertTrigger"));
+                entity.HasOne(d => d.DiagnosisNavigation)
+                    .WithMany(p => p.Diagnoses)
+                    .HasForeignKey(d => d.DiagnosisId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPDIAGNOSESTYPE");
 
-            entity.Property(e => e.DateStart)
-                .HasColumnType("date")
-                .HasColumnName("date_start");
-            entity.Property(e => e.HospitalName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("hospital_name");
-            entity.Property(e => e.PersonId)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("person_id");
-            entity.Property(e => e.DateEnd)
-                .HasColumnType("date")
-                .HasColumnName("date_end");
+                entity.HasOne(d => d.Hospitalization)
+                    .WithMany(p => p.Diagnoses)
+                    .HasForeignKey(d => new { d.DateStart, d.HospitalName, d.PersonId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPDIAGNOSESHOSPITALIZATION");
+            });
 
-            entity.HasOne(d => d.HospitalNameNavigation).WithMany(p => p.Hospitalizations)
-                .HasForeignKey(d => d.HospitalName)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship22");
+            modelBuilder.Entity<Hospital>(entity =>
+            {
+                entity.HasKey(e => e.HospitalName);
 
-            entity.HasOne(d => d.Person).WithMany(p => p.Hospitalizations)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship23");
-        });
+                entity.ToTable("HOSPITAL");
 
-        modelBuilder.Entity<Insurance>(entity =>
-        {
-            entity.HasKey(e => new { e.PersonId, e.CompId, e.DateStart });
+                entity.HasIndex(e => e.Zip, "IX_RELATIONSHIP1");
 
-            entity.ToTable("insurance", tb => tb.HasTrigger("isnuranceInsertTrigger"));
+                entity.Property(e => e.HospitalName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("HOSPITAL_NAME");
 
-            entity.Property(e => e.PersonId)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("person_id");
-            entity.Property(e => e.CompId)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("comp_id");
-            entity.Property(e => e.DateStart)
-                .HasColumnType("date")
-                .HasColumnName("date_start");
-            entity.Property(e => e.DateEnd)
-                .HasColumnType("date")
-                .HasColumnName("date_end");
+                entity.Property(e => e.Capacity)
+                    .HasColumnType("NUMBER(38)")
+                    .HasColumnName("CAPACITY");
 
-            entity.HasOne(d => d.Comp).WithMany(p => p.Insurances)
-                .HasForeignKey(d => d.CompId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship3");
+                entity.Property(e => e.Zip)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("ZIP")
+                    .IsFixedLength();
 
-            entity.HasOne(d => d.Person).WithMany(p => p.Insurances)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship2");
-        });
+                entity.HasOne(d => d.ZipNavigation)
+                    .WithMany(p => p.Hospitals)
+                    .HasForeignKey(d => d.Zip)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPCITYHOSPITAL");
+            });
 
-        modelBuilder.Entity<InsuranceComp>(entity =>
-        {
-            entity.HasKey(e => e.CompId);
+            modelBuilder.Entity<Hospitalization>(entity =>
+            {
+                entity.HasKey(e => new { e.DateStart, e.HospitalName, e.PersonId });
 
-            entity.ToTable("insurance_comp");
+                entity.ToTable("HOSPITALIZATION");
 
-            entity.Property(e => e.CompId)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("comp_id");
-            entity.Property(e => e.CompName)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("comp_name");
-        });
+                entity.Property(e => e.DateStart)
+                    .HasColumnType("DATE")
+                    .HasColumnName("DATE_START");
 
-        modelBuilder.Entity<Payment>(entity =>
-        {
-            entity.HasKey(e => new { e.HospitalName, e.CompId, e.PaymentId });
+                entity.Property(e => e.HospitalName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("HOSPITAL_NAME");
 
-            entity.ToTable("payment");
+                entity.Property(e => e.PersonId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PERSON_ID")
+                    .IsFixedLength();
 
-            entity.Property(e => e.HospitalName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("hospital_name");
-            entity.Property(e => e.CompId)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("comp_id");
-            entity.Property(e => e.PaymentId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("payment_id");
-            entity.Property(e => e.Details)
-                .HasColumnType("xml")
-                .HasColumnName("details");
-            entity.Property(e => e.PaymentDate)
-                .HasColumnType("date")
-                .HasColumnName("payment_date");
-            entity.Property(e => e.PaymentPeriod)
-                .HasColumnType("date")
-                .HasColumnName("payment_period");
+                entity.Property(e => e.DateEnd)
+                    .HasColumnType("DATE")
+                    .HasColumnName("DATE_END");
 
-            entity.HasOne(d => d.Comp).WithMany(p => p.Payments)
-                .HasForeignKey(d => d.CompId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship28");
+                entity.HasOne(d => d.HospitalNameNavigation)
+                    .WithMany(p => p.Hospitalizations)
+                    .HasForeignKey(d => d.HospitalName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPHOSPITALHOPSITALIZATION");
 
-            entity.HasOne(d => d.HospitalNameNavigation).WithMany(p => p.Payments)
-                .HasForeignKey(d => d.HospitalName)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship26");
-        });
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.Hospitalizations)
+                    .HasForeignKey(d => d.PersonId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPPERSONHOSPITALIZATION");
+            });
 
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.ToTable("person");
+            modelBuilder.Entity<Insurance>(entity =>
+            {
+                entity.HasKey(e => new { e.PersonId, e.CompId, e.DateStart });
 
-            entity.HasIndex(e => e.Zip, "IX_Relationship4");
+                entity.ToTable("INSURANCE");
 
-            entity.Property(e => e.PersonId)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("person_id");
-            entity.Property(e => e.Email)
-                .HasMaxLength(40)
-                .IsUnicode(false)
-                .HasColumnName("email");
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("first_name");
-            entity.Property(e => e.LastName)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("last_name");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(16)
-                .IsUnicode(false)
-                .HasColumnName("phone");
-            entity.Property(e => e.Zip)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("ZIP");
+                entity.Property(e => e.PersonId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PERSON_ID")
+                    .IsFixedLength();
 
-            entity.HasOne(d => d.ZipNavigation).WithMany(p => p.People)
-                .HasForeignKey(d => d.Zip)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Relationship4");
-        });
+                entity.Property(e => e.CompId)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("COMP_ID")
+                    .IsFixedLength();
 
-        OnModelCreatingPartial(modelBuilder);
+                entity.Property(e => e.DateStart)
+                    .HasColumnType("DATE")
+                    .HasColumnName("DATE_START");
+
+                entity.Property(e => e.DateEnd)
+                    .HasColumnType("DATE")
+                    .HasColumnName("DATE_END");
+
+                entity.HasOne(d => d.Comp)
+                    .WithMany(p => p.Insurances)
+                    .HasForeignKey(d => d.CompId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPINSURANCECOMP");
+
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.Insurances)
+                    .HasForeignKey(d => d.PersonId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPPERSONINSURANCE");
+            });
+
+            modelBuilder.Entity<InsuranceComp>(entity =>
+            {
+                entity.HasKey(e => e.CompId);
+
+                entity.ToTable("INSURANCE_COMP");
+
+                entity.Property(e => e.CompId)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("COMP_ID")
+                    .IsFixedLength();
+
+                entity.Property(e => e.CompName)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("COMP_NAME");
+            });
+
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.HasKey(e => new { e.HospitalName, e.CompId, e.PaymentId });
+
+                entity.ToTable("PAYMENT");
+
+                entity.Property(e => e.HospitalName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("HOSPITAL_NAME");
+
+                entity.Property(e => e.CompId)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("COMP_ID")
+                    .IsFixedLength();
+
+                entity.Property(e => e.PaymentId)
+                    .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PAYMENT_ID");
+
+                entity.Property(e => e.Details)
+                    .HasColumnType("XMLTYPE")
+                    .HasColumnName("DETAILS");
+
+                entity.Property(e => e.PaymentDate)
+                    .HasColumnType("DATE")
+                    .HasColumnName("PAYMENT_DATE");
+
+                entity.Property(e => e.PaymentPeriod)
+                    .HasColumnType("DATE")
+                    .HasColumnName("PAYMENT_PERIOD");
+
+                entity.HasOne(d => d.Comp)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.CompId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPPAYMENTINSURANCE");
+
+                entity.HasOne(d => d.HospitalNameNavigation)
+                    .WithMany(p => p.Payments)
+                    .HasForeignKey(d => d.HospitalName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPPAYMENTHOSPITAL");
+            });
+
+            modelBuilder.Entity<Person>(entity =>
+            {
+                entity.ToTable("PERSON");
+
+                entity.HasIndex(e => e.Zip, "IX_RELATIONSHIP2");
+
+                entity.Property(e => e.PersonId)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("PERSON_ID")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Zip)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .HasColumnName("ZIP")
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.ZipNavigation)
+                    .WithMany(p => p.People)
+                    .HasForeignKey(d => d.Zip)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("RELATIONSHIPCITYPERSON");
+            });
+
+            modelBuilder.HasSequence("SEQ_PAYMENT_ID");
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

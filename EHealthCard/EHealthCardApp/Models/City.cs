@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
-namespace EHealthCardApp.Models;
-
-public partial class City
+namespace EHealthCardApp.Models
 {
-    [Required]
-    [Key]
-    [StringLength(5, 
-        ErrorMessage = "Zip code has to be 5 chars long",
-        MinimumLength = 5)]
-    public string Zip { get; set; } = null!;
+    public partial class City
+    {
+        public City()
+        {
+            Hospitals = new HashSet<Hospital>();
+            People = new HashSet<Person>();
+        }
 
-    [Required]
-    [StringLength(20)]
-    public string CityName { get; set; } = null!;
+        public string Zip { get; set; } = null!;
+        public string CityName { get; set; } = null!;
 
-    public virtual ICollection<Hospital> Hospitals { get; } = new List<Hospital>();
-
-    public virtual ICollection<Person> People { get; } = new List<Person>();
+        public virtual ICollection<Hospital> Hospitals { get; set; }
+        public virtual ICollection<Person> People { get; set; }
+    }
 }
