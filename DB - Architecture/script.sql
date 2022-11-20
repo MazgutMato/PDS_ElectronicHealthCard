@@ -16,11 +16,12 @@ CREATE TYPE person_inf as OBJECT(
   phone Varchar2(16 ),
   email Varchar2(40 )
 )
+/
 
 CREATE TABLE person(
   person_id Char(10 ) NOT NULL,
   ZIP Char(5 ) NOT NULL,
-  person_inf person_inf NOT NULL,
+  person_inf person_inf NOT NULL
 )
 /
 
@@ -208,8 +209,3 @@ ALTER TABLE insurance ADD CONSTRAINT RelationshipPersonInsurance FOREIGN KEY (pe
 
 ALTER TABLE person ADD CONSTRAINT RelationshipCityPerson FOREIGN KEY (ZIP) REFERENCES city (ZIP)
 /
-
-
-
-
-
