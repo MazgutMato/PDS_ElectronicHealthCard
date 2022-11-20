@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {

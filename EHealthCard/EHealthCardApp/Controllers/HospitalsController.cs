@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {
@@ -32,7 +31,7 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("HospitalName,Zip,Capacity")] Hospital hospital)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (hospital.HospitalName.IsNullOrEmpty() && hospital.Zip.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(hospital.HospitalName) && hospital.Zip.IsNullOrEmpty())
             {
                 return View("Index", new List<InsuranceComp>());
             }
