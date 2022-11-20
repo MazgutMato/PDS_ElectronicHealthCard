@@ -11,8 +11,8 @@ Database: Oracle 19c
 -- Table person
 
 CREATE TYPE person_inf as OBJECT(
-  first_name Varchar2(20 ) NOT NULL,
-  last_name Varchar2(30 ) NOT NULL,
+  first_name Varchar2(20 ),
+  last_name Varchar2(30 ),
   phone Varchar2(16 ),
   email Varchar2(40 )
 )
