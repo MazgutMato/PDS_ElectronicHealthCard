@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCardApp.Models;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EHealthCardApp.Controllers
 {
@@ -33,12 +32,12 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (insurance.PersonId.IsNullOrEmpty() && insurance.CompId.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(insurance.PersonId) && String.IsNullOrEmpty(insurance.CompId))
             {
                 return View("Index", new List<Insurance>());
             }
 
-            if (insurance.CompId.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(insurance.CompId))
             {
                 return View("Index", await _context.Insurances
                           .Include(p => p.Comp)
@@ -47,7 +46,7 @@ namespace EHealthCardApp.Controllers
                           .ToListAsync());
             }
 
-            if (insurance.PersonId.IsNullOrEmpty())
+            if (String.IsNullOrEmpty(insurance.PersonId))
             {
                 return View("Index", await _context.Insurances
                           .Include(p => p.Comp)
