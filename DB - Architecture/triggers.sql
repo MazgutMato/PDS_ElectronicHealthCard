@@ -1,5 +1,5 @@
 -- BEFORE INSERT ON HOSPITALIZATION
-CREATE OR REPLACE TRIGGER hospitalization_Insert_Trigger
+create or replace TRIGGER hospitalization_Insert_Trigger
 BEFORE INSERT ON hospitalization
 FOR EACH ROW
 DECLARE
@@ -11,8 +11,7 @@ BEGIN
 	--Check if person is Insured	
 	select count(*) into check_insured from insurance ins
 		WHERE ins.person_id = :new.person_id
-		AND date_end is null
-		GROUP BY ins.date_end;
+		AND date_end is null;
 
 	if (check_insured <= 0) then
         raise_application_error(-20000,'Person is not insured!');
@@ -20,22 +19,20 @@ BEGIN
 
 	--Check Hospital Capacity	
 	SELECT capacity into hospital_max_cap FROM hospital WHERE hospital_name = :new.hospital_name;
-	
+
 	SELECT count(*) into hospital_curr_cap FROM hospitalization hosp 
 		WHERE hosp.hospital_name = :new.hospital_name 
-		AND hosp.date_end is null
-		GROUP BY hosp.hospital_name;
-	
+		AND hosp.date_end is null;
+
 	if (hospital_curr_cap >= hospital_max_cap) then
         raise_application_error(-20001,'Hospital capacity is full!');
 	end if;
 
 	--Check if person is not Hospitalized
-	
+
 	SELECT count(*) into check_hospitalized FROM hospitalization hosp 
 		WHERE hosp.person_id = :new.person_id
-		AND hosp.date_end is null
-		GROUP BY hosp.person_id;
+		AND hosp.date_end is null;
 
 	if (check_hospitalized >= 1) then
 		raise_application_error(-20002,'Person is currently hospitalized!');

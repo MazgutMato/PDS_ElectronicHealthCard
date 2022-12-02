@@ -57,6 +57,33 @@ namespace EHealthCard.Controllers
             return RedirectToAction("Index");
         }
 
+        private string GeneratePersonId()
+        {
+            var random = new Random();
+            var year = this.RandomString("0123456789", 2, 2, false, false);
+            var month = random.Next(1, 13);
+            if (random.Next(0,2) == 0)
+            {
+                month += 50;
+            }
+            var day = random.Next(0, 29);
+
+            if(month < 10)
+            {
+                year += 0;               
+            }
+            year += month;
+
+            if (day < 10)
+            {
+                year += 0;
+            }
+            year += day;
+            
+            year += this.RandomString("0123456789", 4, 4, false, false);
+            return year;
+        }
+
         private string RandomString(string chars, int minSize, int maxSize, bool firstUpper, bool allUpper)
         {
             var random = new Random();
@@ -126,7 +153,7 @@ namespace EHealthCard.Controllers
             while (count != 1000)
             {
                 //Generate values
-                var id = this.RandomString("0123456789", 10, 10, false, false);
+                var id = this.GeneratePersonId();
                 var zip = cities[random.Next(cities.Count)].Zip;
                 var firstName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
                 var lastName = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 20, true, false);
