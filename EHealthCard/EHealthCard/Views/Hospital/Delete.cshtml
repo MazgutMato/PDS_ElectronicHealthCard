@@ -1,4 +1,4 @@
-﻿@model EHealthCard.Models.City
+﻿@model EHealthCard.Models.Hospital
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,27 +8,25 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>City</h4>
+    <h4>Hospital</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Zip)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Zip)
-        </dd>
-    </dl>
-    <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CityName)
+            @Html.DisplayNameFor(model => model.Capacity)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CityName)
+            @Html.DisplayFor(model => model.Capacity)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ZipNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ZipNavigation.Zip)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Zip" />
+        <input type="hidden" asp-for="HospitalName" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
