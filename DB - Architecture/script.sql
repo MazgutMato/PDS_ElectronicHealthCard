@@ -151,7 +151,7 @@ CREATE TABLE diagnoses(
   hospital_name Varchar2(20 ) NOT NULL,
   person_id Char(10 ) NOT NULL,
   diagnosis_id Char(5 ) NOT NULL,
-  document Long raw
+  document Blob
 )
 /
 
