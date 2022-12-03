@@ -132,34 +132,19 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Zip,CityName")] City city)
         {
-            if (id != city.Zip)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(city);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CityExists(city.Zip))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(city);
+                await _context.SaveChangesAsync();
                 TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["Message"] = "Data Edition Failed";
-            return View(city);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(city);
+            }
+
         }
 
         // GET: Cities/Delete/5
@@ -184,29 +169,32 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Cities == null)
+            try
             {
-                return Problem("Entity set 'EHealthCardContext.Cities'  is null.");
+                if (_context.Cities == null)
+                {
+                    return Problem("Entity set 'EHealthCardContext.Cities'  is null.");
+                }
+                var city = await _context.Cities.FindAsync(id);
+                if (city != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.Cities.Remove(city);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
+
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            var city = await _context.Cities.FindAsync(id);
-            if (city != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.Cities.Remove(city);
-            }
-            else
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
             }
-
-            
-            await _context.SaveChangesAsync();            
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CityExists(string id)
-        {
-            return _context.Cities.Any(e => e.Zip == id);
         }
     }
 }

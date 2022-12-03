@@ -88,24 +88,20 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CompId,CompName")] InsuranceComp insuranceComp)
         {
-            if (ModelState.IsValid)
+
+            try
             {
-                try
-                {
-                    _context.Add(insuranceComp);
-                    await _context.SaveChangesAsync();
-                    TempData["Message"] = "Data Created";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-
-                }
-
-
+                _context.Add(insuranceComp);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Created";
+                return RedirectToAction(nameof(Index));
             }
-            TempData["Message"] = "Data Creation Failed";
-            return View(insuranceComp);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Creation Failed";
+                return View(insuranceComp);
+            }
+
         }
 
         // GET: InsuranceComps/Edit/5
@@ -131,34 +127,19 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("CompId,CompName")] InsuranceComp insuranceComp)
         {
-            if (id != insuranceComp.CompId)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(insuranceComp);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!InsuranceCompExists(insuranceComp.CompId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(insuranceComp);
+                await _context.SaveChangesAsync();
                 TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["Message"] = "Data Edition Failed";
-            return View(insuranceComp);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(insuranceComp);
+            }
         }
 
         // GET: InsuranceComps/Delete/5
@@ -184,28 +165,31 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.InsuranceComps == null)
+            try
             {
-                return Problem("Entity set 'EHealthCardContext.InsuranceComps'  is null.");
+                if (_context.InsuranceComps == null)
+                {
+                    return Problem("Entity set 'EHealthCardContext.InsuranceComps'  is null.");
+                }
+                var insuranceComp = await _context.InsuranceComps.FindAsync(id);
+                if (insuranceComp != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.InsuranceComps.Remove(insuranceComp);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            var insuranceComp = await _context.InsuranceComps.FindAsync(id);
-            if (insuranceComp != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.InsuranceComps.Remove(insuranceComp);
-            }
-            else
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool InsuranceCompExists(string id)
-        {
-            return _context.InsuranceComps.Any(e => e.CompId == id);
         }
     }
 }

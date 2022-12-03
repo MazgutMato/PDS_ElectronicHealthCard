@@ -147,10 +147,10 @@ namespace EHealthCardApp.Controllers
             }
             catch (Exception ex)
             {
-
-            }
-            TempData["Message"] = "Data Edition Failed";
-            return View(insurance);
+                TempData["Message"] = "Data Edition Failed";
+                return View(insurance);
+            } 
+            
         }
 
         // GET: Insurances/Delete/5
@@ -181,7 +181,9 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id, [Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
-            if (_context.Insurances == null)
+            try
+            {
+                if (_context.Insurances == null)
             {
                 return Problem("Entity set 'EHealthCardContext.Insurances'  is null.");
             }
@@ -198,5 +200,11 @@ namespace EHealthCardApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+            catch
+            {
+                TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
+    }
+}
     }
 }

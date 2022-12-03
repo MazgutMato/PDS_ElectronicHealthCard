@@ -18,10 +18,10 @@
 		<thead>
 			<tr>
 				<th>
-					@Html.DisplayNameFor(model => model.Person)
+					@Html.DisplayNameFor(model => model.PersonId)
 				</th>
 				<th>
-					@Html.DisplayNameFor(model => model.Comp)
+					@Html.DisplayNameFor(model => model.CompId)
 				</th>
 				<th>
 					@Html.DisplayNameFor(model => model.DateStart)
@@ -37,10 +37,10 @@
 			{
 				<tr>								
 					<td>
-						@Html.DisplayFor(modelItem => item.Person.PersonId)
+						@Html.DisplayFor(modelItem => item.PersonId)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Comp.CompId)
+						@Html.DisplayFor(modelItem => item.CompId)
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.DateStart)

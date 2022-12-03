@@ -21,7 +21,24 @@ namespace EHealthCard.Controllers
         // GET: DiagnosesTypes
         public async Task<IActionResult> Index()
         {
-              return View(await _context.DiagnosesTypes.ToListAsync());
+            return View(await _context.DiagnosesTypes.ToListAsync());
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            return View();
+        }
+        public async Task<IActionResult> SearchItems([Bind("DiagnosisId,Description,DailyCosts")] DiagnosesType diagnosesType)
+        {
+            TempData["Message"] = "Corresponding Data Listed";
+            if (string.IsNullOrEmpty(diagnosesType.DiagnosisId))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Index", await _context.DiagnosesTypes
+                          .Where(i => i.DiagnosisId == diagnosesType.DiagnosisId)
+                          .ToListAsync());
         }
 
         // GET: DiagnosesTypes/Details/5
@@ -57,10 +74,21 @@ namespace EHealthCard.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(diagnosesType);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(diagnosesType);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Data Created";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "Data Creation Failed";
+                    return View(diagnosesType);
+                }
+
             }
+            TempData["Message"] = "Data Creation Failed";
             return View(diagnosesType);
         }
 
@@ -87,32 +115,18 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("DiagnosisId,Description,DailyCosts")] DiagnosesType diagnosesType)
         {
-            if (id != diagnosesType.DiagnosisId)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(diagnosesType);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DiagnosesTypeExists(diagnosesType.DiagnosisId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(diagnosesType);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
                 return RedirectToAction(nameof(Index));
             }
-            return View(diagnosesType);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(diagnosesType);
+            }
         }
 
         // GET: DiagnosesTypes/Delete/5
@@ -138,23 +152,31 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.DiagnosesTypes == null)
+            try
             {
-                return Problem("Entity set 'ModelContext.DiagnosesTypes'  is null.");
-            }
-            var diagnosesType = await _context.DiagnosesTypes.FindAsync(id);
-            if (diagnosesType != null)
-            {
-                _context.DiagnosesTypes.Remove(diagnosesType);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+                if (_context.DiagnosesTypes == null)
+                {
+                    return Problem("Entity set 'ModelContext.DiagnosesTypes'  is null.");
+                }
+                var diagnosesType = await _context.DiagnosesTypes.FindAsync(id);
+                if (diagnosesType != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.DiagnosesTypes.Remove(diagnosesType);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
 
-        private bool DiagnosesTypeExists(string id)
-        {
-          return _context.DiagnosesTypes.Any(e => e.DiagnosisId == id);
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            } catch
+            {
+                TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

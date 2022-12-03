@@ -22,7 +22,7 @@ namespace EHealthCard.Controllers
 
         // GET: People
         public async Task<IActionResult> Index()
-        {         
+        {
             return View(new List<Person>());
         }
 
@@ -63,16 +63,16 @@ namespace EHealthCard.Controllers
         }
 
         // GET: People/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(Person p_person)
         {
-            if (id == null || _context.People == null)
+            if (p_person == null || _context.People == null)
             {
                 return NotFound();
             }
 
             var person = await _context.People
                 .Include(p => p.ZipNavigation)
-                .FirstOrDefaultAsync(m => m.PersonId == id);
+                .FirstOrDefaultAsync(m => m.PersonId == p_person.PersonId);
 
             if (person == null)
             {
@@ -180,28 +180,19 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PersonId,Zip," + "FirstName,LastName,Phone,Email")] Person person)
         {
-            if (id != person.PersonId)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                    TempData["Message"] = "Data Edited";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    TempData["Message"] = "Data Edition Failed";
-                    return View(person);
-                }
+                _context.Update(person);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
+                return RedirectToAction(nameof(Index));
             }
-            TempData["Message"] = "Data are not valid";
-            return View(person);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(person);
+            }
         }
 
         // GET: People/Delete/5
@@ -228,22 +219,30 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed([Bind("PersonId,Zip," + "FirstName,LastName,Phone,Email")] Person person)
         {
-            if (_context.People == null)
+            try
             {
-                return Problem("Entity set 'ModelContext.People'  is null.");
+                if (_context.People == null)
+                {
+                    return Problem("Entity set 'ModelContext.People'  is null.");
+                }
+                if (person != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.People.Remove(person);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            if (person != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.People.Remove(person);
-            }
-            else
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
     }
 }

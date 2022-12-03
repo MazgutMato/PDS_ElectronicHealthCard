@@ -192,28 +192,19 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PaymentId,HospitalName,CompId,PaymentDate,PaymentPeriod,Details")] Payment payment)
         {
-            if (id != payment.HospitalName)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(payment);
-                    await _context.SaveChangesAsync();
-                    TempData["Message"] = "Data Edited";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    TempData["Message"] = "Data Edition Failed";
-                    return View(payment);
-                }
+                _context.Update(payment);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
+                return RedirectToAction(nameof(Index));
             }
-            TempData["Message"] = "Data are not valid";
-            return View(payment);
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(payment);
+            }
         }
 
         // GET: Payments/Delete/5
@@ -244,22 +235,30 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id, [Bind("PaymentId,HospitalName,CompId,PaymentDate,PaymentPeriod,Details")] Payment payment)
         {
-            if (_context.Payments == null)
+            try
             {
-                return Problem("Entity set 'EHealthCardContext.Payments'  is null.");
+                if (_context.Payments == null)
+                {
+                    return Problem("Entity set 'EHealthCardContext.Payments'  is null.");
+                }
+                if (payment != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.Payments.Remove(payment);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            if (payment != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.Payments.Remove(payment);
-            }
-            else
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
     }
 }

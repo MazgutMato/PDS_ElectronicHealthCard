@@ -129,23 +129,19 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("HospitalName,Zip,Capacity")] Hospital hospital)
         {
-            if (id != hospital.HospitalName)
-            {
-                return NotFound();
-            }
-
             try
             {
                 _context.Update(hospital);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
+                return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
                 TempData["Message"] = "Data Edition Failed";
                 return View(hospital);
             }
-            TempData["Message"] = "Data Edited";
-            return RedirectToAction(nameof(Index));
+
 
         }
 
@@ -173,28 +169,31 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Hospitals == null)
+            try
             {
-                return Problem("Entity set 'EHealthCardContext.Hospitals'  is null.");
+                if (_context.Hospitals == null)
+                {
+                    return Problem("Entity set 'EHealthCardContext.Hospitals'  is null.");
+                }
+                var hospital = await _context.Hospitals.FindAsync(id);
+                if (hospital != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.Hospitals.Remove(hospital);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            var hospital = await _context.Hospitals.FindAsync(id);
-            if (hospital != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.Hospitals.Remove(hospital);
-            }
-            else
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
+                return RedirectToAction(nameof(Index));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool HospitalExists(string id)
-        {
-            return _context.Hospitals.Any(e => e.HospitalName == id);
         }
     }
 }
