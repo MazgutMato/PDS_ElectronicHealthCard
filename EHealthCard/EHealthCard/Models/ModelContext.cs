@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EHealthCard.Models
+namespace EHealthCard.ModelsNew
 {
     public partial class ModelContext : DbContext
     {
@@ -167,11 +167,13 @@ namespace EHealthCard.Models
                 entity.Property(e => e.HospitalName)
                     .HasMaxLength(20)
                     .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("HOSPITAL_NAME");
 
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(10)
                     .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
 
@@ -201,6 +203,7 @@ namespace EHealthCard.Models
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(10)
                     .IsUnicode(false)
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
 
@@ -259,6 +262,7 @@ namespace EHealthCard.Models
 
                 entity.Property(e => e.PaymentId)
                     .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("PAYMENT_ID");
 
                 entity.Property(e => e.CompId)
