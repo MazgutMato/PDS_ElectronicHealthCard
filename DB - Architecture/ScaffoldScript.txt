@@ -1,0 +1,1 @@
+Scaffold-DbContext "Data Source=localhost:1521/xe;User ID=c##local;Password=oracle;" Oracle.EntityFrameworkCore -Schemas C##LOCAL -Outputdir ModelsNew

@@ -31,7 +31,7 @@ namespace EHealthCard.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseOracle("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                optionsBuilder.UseOracle("Data Source=localhost:1521/xe;User ID=c##local;Password=oracle;");
             }
         }
 
@@ -108,7 +108,7 @@ namespace EHealthCard.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.Document)
-                    .HasColumnType("LONG RAW")
+                    .HasColumnType("BLOB")
                     .HasColumnName("DOCUMENT");
 
                 entity.HasOne(d => d.DiagnosisNavigation)
@@ -254,14 +254,16 @@ namespace EHealthCard.Models
 
             modelBuilder.Entity<Payment>(entity =>
             {
-                entity.HasKey(e => new { e.HospitalName, e.CompId, e.PaymentId });
-
                 entity.ToTable("PAYMENT");
 
-                entity.Property(e => e.HospitalName)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("HOSPITAL_NAME");
+                entity.HasIndex(e => e.CompId, "IX_RELATIONSHIP15");
+
+                entity.HasIndex(e => e.HospitalName, "IX_RELATIONSHIP3");
+
+                entity.Property(e => e.PaymentId)
+                    .HasColumnType("NUMBER(38)")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("PAYMENT_ID");
 
                 entity.Property(e => e.CompId)
                     .HasMaxLength(3)
@@ -269,14 +271,14 @@ namespace EHealthCard.Models
                     .HasColumnName("COMP_ID")
                     .IsFixedLength();
 
-                entity.Property(e => e.PaymentId)
-                    .HasColumnType("NUMBER(38)")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("PAYMENT_ID");
-
                 entity.Property(e => e.Details)
                     .HasColumnType("XMLTYPE")
                     .HasColumnName("DETAILS");
+
+                entity.Property(e => e.HospitalName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("HOSPITAL_NAME");
 
                 entity.Property(e => e.PaymentDate)
                     .HasColumnType("DATE")
@@ -290,13 +292,13 @@ namespace EHealthCard.Models
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.CompId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("RELATIONSHIPPAYMENTINSURANCE");
+                    .HasConstraintName("RELATIONSHIP2");
 
                 entity.HasOne(d => d.HospitalNameNavigation)
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.HospitalName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("RELATIONSHIPPAYMENTHOSPITAL");
+                    .HasConstraintName("RELATIONSHIP3");
             });
 
             modelBuilder.Entity<Person>(entity =>
@@ -310,6 +312,26 @@ namespace EHealthCard.Models
                     .IsUnicode(false)
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("EMAIL");
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("FIRST_NAME");
+
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("LAST_NAME");
+
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(16)
+                    .IsUnicode(false)
+                    .HasColumnName("PHONE");
 
                 entity.Property(e => e.Zip)
                     .HasMaxLength(5)

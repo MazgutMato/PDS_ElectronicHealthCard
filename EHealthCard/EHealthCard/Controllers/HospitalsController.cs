@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 
-namespace EHealthCardApp.Controllers
+namespace EHealthCard.Controllers
 {
     public class HospitalsController : Controller
     {
@@ -32,12 +32,12 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("HospitalName,Zip,Capacity")] Hospital hospital)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (String.IsNullOrEmpty(hospital.HospitalName) && String.IsNullOrEmpty(hospital.Zip))
+            if (string.IsNullOrEmpty(hospital.HospitalName) && string.IsNullOrEmpty(hospital.Zip))
             {
                 return View("Index", new List<InsuranceComp>());
             }
 
-            if (String.IsNullOrEmpty(hospital.Zip))
+            if (string.IsNullOrEmpty(hospital.Zip))
             {
                 return View("Index", await _context.Hospitals
                           .Include(p => p.ZipNavigation)
@@ -45,7 +45,7 @@ namespace EHealthCardApp.Controllers
                           .ToListAsync());
             }
 
-            if (String.IsNullOrEmpty(hospital.HospitalName))
+            if (string.IsNullOrEmpty(hospital.HospitalName))
             {
                 return View("Index", await _context.Hospitals
                           .Include(p => p.ZipNavigation)
@@ -134,19 +134,19 @@ namespace EHealthCardApp.Controllers
                 return NotFound();
             }
 
-                try
-                {
-                    _context.Update(hospital);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    TempData["Message"] = "Data Edition Failed";
-                    return View(hospital);
+            try
+            {
+                _context.Update(hospital);
+                await _context.SaveChangesAsync();
             }
-                TempData["Message"] = "Data Edited";
-                return RedirectToAction(nameof(Index)); 
-            
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(hospital);
+            }
+            TempData["Message"] = "Data Edited";
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Hospitals/Delete/5
@@ -187,14 +187,14 @@ namespace EHealthCardApp.Controllers
             {
                 TempData["Message"] = "Data Deletion Failed";
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool HospitalExists(string id)
         {
-          return _context.Hospitals.Any(e => e.HospitalName == id);
+            return _context.Hospitals.Any(e => e.HospitalName == id);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Data;
 using System.Text;
 using System.Xml;
 
@@ -415,7 +416,7 @@ namespace EHealthCard.Controllers
 
             //Hospitalizations ended
             count = 0;
-            while (count != 800)
+            while (count != 1)
             {
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
@@ -445,7 +446,7 @@ namespace EHealthCard.Controllers
                     count++;
 
                     //Diagnoses
-                    var diagnosesCount = random.Next(1, 3);
+                    var diagnosesCount = 1;//random.Next(1, 3);
                     while (diagnosesCount > 0)
                     {
                         var hospDiagnoze = new Diagnosis();
@@ -453,6 +454,24 @@ namespace EHealthCard.Controllers
                         hospDiagnoze.PersonId = hospitalization.PersonId;
                         hospDiagnoze.DateStart = hospitalization.DateStart;
                         hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+
+                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\1.jpg";
+                        FileStream fls = null;
+                        try
+                        {
+                            fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                        }
+                        catch (Exception ex)
+                        {
+                            var exept = ex;
+                        }
+                        
+                        //a byte array to read the image 
+                        byte[] blob = new byte[fls.Length];
+                        fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                        fls.Close();
+                        hospDiagnoze.Document = blob;
+
                         var resDiagnose = false;
                         try
                         {
@@ -472,7 +491,6 @@ namespace EHealthCard.Controllers
                 }
             }
             await _context.SaveChangesAsync();
-
 
             //Hospitalizations actual
             count = 0;

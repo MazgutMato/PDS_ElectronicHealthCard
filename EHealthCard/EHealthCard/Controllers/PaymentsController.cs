@@ -9,7 +9,7 @@ using EHealthCard.Models;
 using System.Text;
 using System.Xml;
 
-namespace EHealthCardApp.Controllers
+namespace EHealthCard.Controllers
 {
     public class PaymentsController : Controller
     {
@@ -22,7 +22,7 @@ namespace EHealthCardApp.Controllers
 
         // GET: Payments
         public async Task<IActionResult> Index()
-        {           
+        {
             return View(new List<Payment>());
         }
 
@@ -31,15 +31,15 @@ namespace EHealthCardApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> SearchItems([Bind("HospitalName,CompId,PaymentDate,PaymentPeriod")] Payment payment) 
+        public async Task<IActionResult> SearchItems([Bind("HospitalName,CompId,PaymentDate,PaymentPeriod")] Payment payment)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (String.IsNullOrEmpty(payment.CompId) && String.IsNullOrEmpty(payment.HospitalName))
+            if (string.IsNullOrEmpty(payment.CompId) && string.IsNullOrEmpty(payment.HospitalName))
             {
                 return View("Index", new List<InsuranceComp>());
             }
 
-            if (String.IsNullOrEmpty(payment.CompId))
+            if (string.IsNullOrEmpty(payment.CompId))
             {
                 return View("Index", await _context.Payments
                           .Include(p => p.HospitalNameNavigation)
@@ -48,7 +48,7 @@ namespace EHealthCardApp.Controllers
                           .ToListAsync());
             }
 
-            if (String.IsNullOrEmpty(payment.HospitalName))
+            if (string.IsNullOrEmpty(payment.HospitalName))
             {
                 return View("Index", await _context.Payments
                           .Include(p => p.HospitalNameNavigation)
@@ -88,7 +88,7 @@ namespace EHealthCardApp.Controllers
             var stringReader = new StringReader(payment.Details);
             XmlReader reader = XmlReader.Create(stringReader);
 
-            while(reader.Name != "Bank")
+            while (reader.Name != "Bank")
             {
                 reader.Read();
             }
@@ -166,7 +166,7 @@ namespace EHealthCardApp.Controllers
                 TempData["Message"] = "Data Creation Failed";
                 return View(payment);
             }
-            
+
         }
 
         // GET: Payments/Edit/5
@@ -181,7 +181,7 @@ namespace EHealthCardApp.Controllers
             if (payment == null)
             {
                 return NotFound();
-            }  
+            }
             return View(payment);
         }
 
@@ -210,7 +210,7 @@ namespace EHealthCardApp.Controllers
                 {
                     TempData["Message"] = "Data Edition Failed";
                     return View(payment);
-                }                
+                }
             }
             TempData["Message"] = "Data are not valid";
             return View(payment);
