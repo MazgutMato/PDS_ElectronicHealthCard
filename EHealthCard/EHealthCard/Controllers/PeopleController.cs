@@ -22,10 +22,8 @@ namespace EHealthCard.Controllers
 
         // GET: People
         public async Task<IActionResult> Index()
-        {
-            var modelContext = _context.People.Include(p => p.ZipNavigation);
-            return View(await modelContext.ToListAsync());
-            //return View(new List<Payment>());
+        {         
+            return View(new List<Person>());
         }
 
         public async Task<IActionResult> Search()
@@ -145,7 +143,11 @@ namespace EHealthCard.Controllers
                 //Comit
                 transaction.Commit();
                 connection.Close();
-                return RedirectToAction(nameof(Index));
+
+                TempData["Message"] = "Data Created";
+                var ret_list = new List<Person>();
+                ret_list.Add(person);
+                return View("Index", ret_list);
             }
             catch (Exception ex)
             {
@@ -156,14 +158,14 @@ namespace EHealthCard.Controllers
             }
         }
         // GET: People/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(Person p_person)
         {
-            if (id == null || _context.People == null)
+            if (p_person == null || _context.People == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.People.FindAsync(id);
+            var person = await _context.People.FindAsync(p_person.PersonId);
             if (person == null)
             {
                 return NotFound();

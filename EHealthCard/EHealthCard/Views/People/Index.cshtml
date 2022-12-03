@@ -9,6 +9,9 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<p>
+    <a asp-action="Search">Search People</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -32,9 +35,9 @@
                     @Html.DisplayFor(modelItem => item.Zip)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.PersonId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
+                    @Html.ActionLink("Edit", "Edit",  item ) |
+                    @Html.ActionLink("Details", "Details", item) |
+                    @Html.ActionLink("Delete", "Delete",  item)
                 </td>
             </tr>
         }

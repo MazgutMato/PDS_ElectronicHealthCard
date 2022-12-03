@@ -21,7 +21,7 @@ namespace EHealthCardApp.Controllers
         // GET: InsuranceComps
         public async Task<IActionResult> Index()
         {
-            return View(new List<InsuranceComp>());
+            return View(await _context.InsuranceComps.ToListAsync());
         }
 
         public async Task<IActionResult> Search()

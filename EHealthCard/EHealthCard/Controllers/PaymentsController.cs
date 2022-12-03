@@ -157,7 +157,9 @@ namespace EHealthCardApp.Controllers
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
                 TempData["Message"] = "Data Created";
-                return RedirectToAction(nameof(Index));
+                var ret_list = new List<Payment>();
+                ret_list.Add(payment);
+                return View("Index", ret_list);
             }
             catch (Exception ex)
             {
@@ -175,8 +177,7 @@ namespace EHealthCardApp.Controllers
                 return NotFound();
             }
 
-            var payment = await _context.Payments.FindAsync(
-                p_payment.HospitalName, p_payment.CompId, p_payment.PaymentId);
+            var payment = await _context.Payments.FindAsync(p_payment.PaymentId);
             if (payment == null)
             {
                 return NotFound();

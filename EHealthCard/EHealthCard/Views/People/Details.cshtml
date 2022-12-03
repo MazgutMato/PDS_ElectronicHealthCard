@@ -9,16 +9,50 @@
 <div>
     <h4>Person</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ZipNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ZipNavigation.Zip)
-        </dd>
-    </dl>
+    <div class="row">
+        <div class="col">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.PersonId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.PersonId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Zip)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Zip)
+            </dd>
+        </div>
+        <div class="col">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Phone)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Phone)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+        </div>
+    </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.PersonId">Edit</a> |
+    @Html.ActionLink("Edit", "Edit", Model) |
     <a asp-action="Index">Back to List</a>
 </div>

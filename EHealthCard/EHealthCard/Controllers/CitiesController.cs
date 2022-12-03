@@ -22,7 +22,7 @@ namespace EHealthCardApp.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-            return View( new List<City>());
+            return View(await _context.Cities.ToListAsync());
         }
         public async Task<IActionResult> Search()
         {

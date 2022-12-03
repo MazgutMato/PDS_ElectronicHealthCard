@@ -21,7 +21,8 @@ namespace EHealthCardApp.Controllers
         // GET: Hospitals
         public async Task<IActionResult> Index()
         {
-            return View(new List<Hospital>());
+            var modelContext = _context.Hospitals.Include(h => h.ZipNavigation);
+            return View(await modelContext.ToListAsync());
         }
         public async Task<IActionResult> Search()
         {
