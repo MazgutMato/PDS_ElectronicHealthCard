@@ -1,27 +1,14 @@
-/*
-Created: 20. 11. 2022
-Modified: 20. 11. 2022
-Model: SP - database
-Database: Oracle 19c
-*/
-
-
 -- Create tables section -------------------------------------------------
 
 -- Table person
 
-CREATE TYPE person_inf as OBJECT(
-  first_name Varchar2(20 ),
-  last_name Varchar2(30 ),
-  phone Varchar2(16 ),
-  email Varchar2(40 )
-)
-/
-
 CREATE TABLE person(
   person_id Char(10 ) NOT NULL,
   ZIP Char(5 ) NOT NULL,
-  person_inf person_inf NOT NULL
+  first_name Varchar2(20 ) NOT NULL,
+  last_name Varchar2(30 ) NOT NULL,
+  phone Varchar2(16 ),
+  email Varchar2(40 )
 )
 /
 
@@ -117,17 +104,25 @@ ALTER TABLE hospitalization ADD CONSTRAINT PK_hospitalization PRIMARY KEY (date_
 
 CREATE TABLE payment(
   payment_id Integer NOT NULL,
-  hospital_name Varchar2(20 ) NOT NULL,
   comp_id Char(3 ) NOT NULL,
+  hospital_name Varchar2(20 ) NOT NULL,
   payment_date Date NOT NULL,
   payment_period Date NOT NULL,
   details XMLType NOT NULL
 )
 /
 
+-- Create indexes for table payment
+
+CREATE INDEX IX_Relationship15 ON payment (comp_id)
+/
+
+CREATE INDEX IX_Relationship3 ON payment (hospital_name)
+/
+
 -- Add keys for table payment
 
-ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (hospital_name,comp_id,payment_id)
+ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (payment_id)
 /
 
 -- Table diagnoses_type
@@ -162,16 +157,6 @@ ALTER TABLE diagnoses ADD CONSTRAINT PK_diagnoses PRIMARY KEY (date_start,hospit
 
 
 -- Create foreign keys (relationships) section ------------------------------------------------- 
-
-ALTER TABLE payment ADD CONSTRAINT RelationshipPaymentInsurance FOREIGN KEY (comp_id) REFERENCES insurance_comp (comp_id)
-/
-
-
-
-ALTER TABLE payment ADD CONSTRAINT RelationshipPaymentHospital FOREIGN KEY (hospital_name) REFERENCES hospital (hospital_name)
-/
-
-
 
 ALTER TABLE diagnoses ADD CONSTRAINT RelationshipDIagnosesType FOREIGN KEY (diagnosis_id) REFERENCES diagnoses_type (diagnosis_id)
 /
@@ -213,5 +198,10 @@ ALTER TABLE person ADD CONSTRAINT RelationshipCityPerson FOREIGN KEY (ZIP) REFER
 
 
 
+ALTER TABLE payment ADD CONSTRAINT Relationship2 FOREIGN KEY (comp_id) REFERENCES insurance_comp (comp_id)
+/
 
 
+
+ALTER TABLE payment ADD CONSTRAINT Relationship3 FOREIGN KEY (hospital_name) REFERENCES hospital (hospital_name)
+/

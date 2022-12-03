@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 
-namespace EHealthCardApp.Controllers
+namespace EHealthCard.Controllers
 {
     public class InsuranceCompsController : Controller
     {
@@ -32,19 +32,19 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("CompId,CompName")] InsuranceComp insuranceComp)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (String.IsNullOrEmpty(insuranceComp.CompId) && String.IsNullOrEmpty(insuranceComp.CompName))
+            if (string.IsNullOrEmpty(insuranceComp.CompId) && string.IsNullOrEmpty(insuranceComp.CompName))
             {
                 return View("Index", new List<InsuranceComp>());
             }
 
-            if (String.IsNullOrEmpty(insuranceComp.CompId))
+            if (string.IsNullOrEmpty(insuranceComp.CompId))
             {
                 return View("Index", await _context.InsuranceComps
                           .Where(i => i.CompName == insuranceComp.CompName)
                           .ToListAsync());
             }
 
-            if (String.IsNullOrEmpty(insuranceComp.CompName))
+            if (string.IsNullOrEmpty(insuranceComp.CompName))
             {
                 return View("Index", await _context.InsuranceComps
                           .Where(i => i.CompId == insuranceComp.CompId)
@@ -97,12 +97,12 @@ namespace EHealthCardApp.Controllers
                     TempData["Message"] = "Data Created";
                     return RedirectToAction(nameof(Index));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    
+
                 }
 
-                
+
             }
             TempData["Message"] = "Data Creation Failed";
             return View(insuranceComp);
@@ -193,12 +193,13 @@ namespace EHealthCardApp.Controllers
             {
                 TempData["Message"] = "Data Deleted";
                 _context.InsuranceComps.Remove(insuranceComp);
-            } else
+            }
+            else
             {
                 TempData["Message"] = "Data Deletion Failed";
             }
 
-            await _context.SaveChangesAsync();           
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

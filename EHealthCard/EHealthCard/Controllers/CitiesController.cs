@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using EHealthCard.Models;
 
-namespace EHealthCardApp.Controllers
+namespace EHealthCard.Controllers
 {
     public class CitiesController : Controller
     {
@@ -22,7 +22,7 @@ namespace EHealthCardApp.Controllers
         // GET: Cities
         public async Task<IActionResult> Index()
         {
-            return View( new List<City>());
+            return View(new List<City>());
         }
         public async Task<IActionResult> Search()
         {
@@ -32,19 +32,19 @@ namespace EHealthCardApp.Controllers
         public async Task<IActionResult> SearchItems([Bind("Zip,CityName")] City city)
         {
             TempData["Message"] = "Corresponding Data Listed";
-            if (String.IsNullOrEmpty(city.Zip) && String.IsNullOrEmpty(city.CityName))
+            if (string.IsNullOrEmpty(city.Zip) && string.IsNullOrEmpty(city.CityName))
             {
                 return View("Index", new List<City>());
             }
 
-            if (String.IsNullOrEmpty(city.Zip))
+            if (string.IsNullOrEmpty(city.Zip))
             {
                 return View("Index", await _context.Cities
                           .Where(i => i.CityName == city.CityName)
                           .ToListAsync());
             }
 
-            if (String.IsNullOrEmpty(city.CityName))
+            if (string.IsNullOrEmpty(city.CityName))
             {
                 return View("Index", await _context.Cities
                           .Where(i => i.Zip == city.Zip)
@@ -97,14 +97,14 @@ namespace EHealthCardApp.Controllers
                     TempData["Message"] = "Data Created";
                     return RedirectToAction(nameof(Index));
 
-                } 
-                catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     TempData["Message"] = "Data Creation Failed";
                     return View(city);
                 }
-                
-            }            
+
+            }
             TempData["Message"] = "Data Creation Failed";
             return View(city);
         }
@@ -193,13 +193,14 @@ namespace EHealthCardApp.Controllers
             {
                 TempData["Message"] = "Data Deleted";
                 _context.Cities.Remove(city);
-            } else
+            }
+            else
             {
                 TempData["Message"] = "Data Deletion Failed";
             }
 
-            
-            await _context.SaveChangesAsync();            
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
