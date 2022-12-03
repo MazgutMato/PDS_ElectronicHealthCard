@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EHealthCard.ModelsNew
+namespace EHealthCard.Models
 {
     public partial class ModelContext : DbContext
     {
