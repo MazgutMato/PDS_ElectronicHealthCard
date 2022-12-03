@@ -167,13 +167,11 @@ namespace EHealthCard.Models
                 entity.Property(e => e.HospitalName)
                     .HasMaxLength(20)
                     .IsUnicode(false)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("HOSPITAL_NAME");
 
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(10)
                     .IsUnicode(false)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
 
@@ -203,7 +201,6 @@ namespace EHealthCard.Models
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(10)
                     .IsUnicode(false)
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
 
@@ -262,7 +259,6 @@ namespace EHealthCard.Models
 
                 entity.Property(e => e.PaymentId)
                     .HasColumnType("NUMBER(38)")
-                    .ValueGeneratedOnAdd()
                     .HasColumnName("PAYMENT_ID");
 
                 entity.Property(e => e.CompId)
@@ -312,26 +308,6 @@ namespace EHealthCard.Models
                     .IsUnicode(false)
                     .HasColumnName("PERSON_ID")
                     .IsFixedLength();
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(40)
-                    .IsUnicode(false)
-                    .HasColumnName("EMAIL");
-
-                entity.Property(e => e.FirstName)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("FIRST_NAME");
-
-                entity.Property(e => e.LastName)
-                    .HasMaxLength(30)
-                    .IsUnicode(false)
-                    .HasColumnName("LAST_NAME");
-
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(16)
-                    .IsUnicode(false)
-                    .HasColumnName("PHONE");
 
                 entity.Property(e => e.Zip)
                     .HasMaxLength(5)
