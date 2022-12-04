@@ -66,6 +66,7 @@ BEGIN
             raise_application_error(-20003,'Hospitalization with same date already exists!');
         end if;
         
+        check_hospitalized := -1;
         --Check if end is more then first left interval
         select min(rozdiel) into check_hospitalized from
         (
@@ -73,7 +74,6 @@ BEGIN
                 where person_id = :new.person_id
         ) where rozdiel > 0;
         
-        check_hospitalized := -1;
         if check_hospitalized >= 0 then
             if ((:new.date_end - :new.date_start) > check_hospitalized) then
                 raise_application_error(-20003,'Hospitalization with same date already exists!');
@@ -112,4 +112,64 @@ BEGIN
 END;
 /
 
-
+create or replace TRIGGER insurance_Insert_Trigger
+BEFORE INSERT ON insurance
+FOR EACH ROW
+DECLARE
+    count_into integer;
+BEGIN
+    --Check if datestart is earlier then birthDate
+    if(MONTHS_BETWEEN(id_to_birthdate(:new.person_id),:new.date_start) > 0 ) then
+        raise_application_error(-20000,'Date start is less then person birth!');
+    end if;
+    
+    --Check if start date is in other hospitalization interval
+        select count(*) into count_into from insurance
+            where person_id = :new.person_id and date_start < :new.date_start and date_end > :new.date_start;
+            
+        if (count_into > 0) then
+            raise_application_error(-20003,'Insurance with same date already exists!');
+        end if;
+    
+	--Check if person is not insured
+    if(:new.date_end is null) then
+        SELECT count(*) into count_into FROM insurance
+		WHERE insurance.person_id = :new.person_id
+		AND insurance.date_end is null;
+        
+        if (count_into >= 1) then
+            raise_application_error(-20002,'Person is currently insured!');
+        end if;
+    else 
+        --Check if end date is in other insurance interval
+        select count(*) into count_into from insurance
+            where person_id = :new.person_id and date_start < :new.date_end and date_end > :new.date_end;
+            
+        if (count_into >= 1) then
+            raise_application_error(-20003,'Insurance with same date already exists!');
+        end if;
+        
+        --Check if date end is more then date start current insurance
+        select count(*) into count_into from insurance
+            where person_id = :new.person_id and date_start < :new.date_end and date_end is null;
+            
+        if (count_into >= 1) then
+            raise_application_error(-20003,'Insurance with same date already exists!');
+        end if;
+        
+        --Check if end is more then first left interval
+        count_into := -1;
+        select min(rozdiel) into count_into from
+        (
+            select date_start - :new.date_start rozdiel from insurance
+                where person_id = :new.person_id
+        ) where rozdiel > 0;
+        
+        if count_into >= 0 then
+            if ((:new.date_end - :new.date_start) > count_into) then
+                raise_application_error(-20003,'Insurance with same date already exists!');
+            end if;
+        end if;
+    end if;
+END;
+/
