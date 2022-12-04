@@ -24,7 +24,7 @@ namespace EHealthCard.Models
         public string DiagnosisId { get; set; } = null!;
 
         [Required]
-        public byte[]? Document { get; set; }
+        public byte[]? Document { get; set; } = new byte[0];
 
         public virtual DiagnosesType DiagnosisNavigation { get; set; } = null!;
         public virtual Hospitalization Hospitalization { get; set; } = null!;

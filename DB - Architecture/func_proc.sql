@@ -28,3 +28,24 @@ create or replace function get_person_inf
             || info.phone || ';' || info.email || ';';
     END;
 /
+
+create or replace function id_to_birthdate
+(
+    p_person_id char
+)
+return date
+is
+    str_date varchar(10);
+begin  
+    --Convert id to date
+    if(substr(p_person_id, 1,2) > to_char(sysdate, 'YY')) then
+        str_date := '19' || substr(p_person_id, 1,2);
+    else
+        str_date := '20' || substr(p_person_id, 1,2);
+    end if;
+
+    str_date := str_date || '.' || mod(substr(p_person_id,3,2),50);
+    str_date := str_date || '.'|| substr(p_person_id,5,2);
+    return to_date( str_date, 'YYYY.MM.DD' );        
+end;
+/

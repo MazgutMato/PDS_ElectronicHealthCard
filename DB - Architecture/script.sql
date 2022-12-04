@@ -1,14 +1,31 @@
 -- Create tables section -------------------------------------------------
 
+-- Table drops
+
+drop table diagnoses;
+drop table diagnoses_type;
+drop table hospitalization;
+drop table payment;
+drop table insurance;
+drop table insurance_comp;
+drop table hospital;
+drop table person;
+drop table city;
+
 -- Table person
+
+CREATE TYPE person_inf as OBJECT(
+  first_name Varchar2(20 ),
+  last_name Varchar2(30 ),
+  phone Varchar2(16 ),
+  email Varchar2(40 )
+)
+/
 
 CREATE TABLE person(
   person_id Char(10 ) NOT NULL,
   ZIP Char(5 ) NOT NULL,
-  first_name Varchar2(20 ) NOT NULL,
-  last_name Varchar2(30 ) NOT NULL,
-  phone Varchar2(16 ),
-  email Varchar2(40 )
+  person_inf person_inf NOT NULL
 )
 /
 
