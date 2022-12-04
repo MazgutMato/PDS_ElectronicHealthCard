@@ -24,11 +24,11 @@
                     @Html.DisplayNameFor(model => model.CompId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PaymentDate)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.PaymentPeriod)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentDate)
+                </th>               
                 <th></th>
             </tr>
         </thead>
@@ -43,10 +43,10 @@
                         @Html.DisplayFor(modelItem => item.CompId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.PaymentDate)
+                        @item.PaymentPeriod.ToString("dd.MM.yyyy")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.PaymentPeriod)
+                        @item.PaymentDate.ToString("dd.MM.yyyy")
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", item) |

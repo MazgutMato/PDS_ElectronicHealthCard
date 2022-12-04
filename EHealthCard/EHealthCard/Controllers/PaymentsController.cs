@@ -33,6 +33,10 @@ namespace EHealthCard.Controllers
 
         public async Task<IActionResult> SearchItems([Bind("HospitalName,CompId,PaymentDate,PaymentPeriod")] Payment payment)
         {
+            //ONLY DATE
+            payment.PaymentPeriod = payment.PaymentPeriod.Date;
+            payment.PaymentDate = payment.PaymentDate.Date;
+
             TempData["Message"] = "Corresponding Data Listed";
             if (string.IsNullOrEmpty(payment.CompId) && string.IsNullOrEmpty(payment.HospitalName))
             {
@@ -68,6 +72,10 @@ namespace EHealthCard.Controllers
         // GET: Payments/Details/5
         public async Task<IActionResult> Details(Payment p_payment)
         {
+            //ONLY DATE
+            p_payment.PaymentPeriod = p_payment.PaymentPeriod.Date;
+            p_payment.PaymentDate = p_payment.PaymentDate.Date;
+
             if (p_payment == null || _context.Payments == null)
             {
                 return NotFound();
@@ -130,6 +138,10 @@ namespace EHealthCard.Controllers
         public async Task<IActionResult> Create([Bind("PaymentId,HospitalName,CompId," +
             "PaymentDate,PaymentPeriod,CompBank,HospitalBank,CompIban,HospitalIban,Amount")] Payment payment)
         {
+            //ONLY DATE
+            payment.PaymentPeriod = payment.PaymentPeriod.Date;
+            payment.PaymentDate = payment.PaymentDate.Date;
+
             try
             {
                 var XmlDetails = new StringBuilder();
@@ -172,6 +184,10 @@ namespace EHealthCard.Controllers
         // GET: Payments/Edit/5
         public async Task<IActionResult> Edit(Payment p_payment)
         {
+            //ONLY DATE
+            p_payment.PaymentPeriod = p_payment.PaymentPeriod.Date;
+            p_payment.PaymentDate = p_payment.PaymentDate.Date;
+
             if (p_payment == null || _context.Payments == null)
             {
                 return NotFound();
@@ -192,6 +208,9 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PaymentId,HospitalName,CompId,PaymentDate,PaymentPeriod,Details")] Payment payment)
         {
+            //ONLY DATE
+            payment.PaymentPeriod = payment.PaymentPeriod.Date;
+            payment.PaymentDate = payment.PaymentDate.Date;
 
             try
             {
@@ -210,6 +229,10 @@ namespace EHealthCard.Controllers
         // GET: Payments/Delete/5
         public async Task<IActionResult> Delete(Payment p_payment)
         {
+            //ONLY DATE
+            p_payment.PaymentPeriod = p_payment.PaymentPeriod.Date;
+            p_payment.PaymentDate = p_payment.PaymentDate.Date;
+
             if (p_payment == null || _context.Payments == null)
             {
                 return NotFound();
@@ -235,6 +258,10 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id, [Bind("PaymentId,HospitalName,CompId,PaymentDate,PaymentPeriod,Details")] Payment payment)
         {
+            //ONLY DATE
+            payment.PaymentPeriod = payment.PaymentPeriod.Date;
+            payment.PaymentDate = payment.PaymentDate.Date;
+
             try
             {
                 if (_context.Payments == null)

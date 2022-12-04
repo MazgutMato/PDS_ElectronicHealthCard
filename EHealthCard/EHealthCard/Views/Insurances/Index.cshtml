@@ -43,10 +43,13 @@
 						@Html.DisplayFor(modelItem => item.CompId)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.DateStart)
+						@item.DateStart.ToString("dd.MM.yyyy")
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.DateEnd)
+						@if (item.DateEnd != null)
+						{
+							@item.DateEnd?.ToString("dd.MM.yyyy");
+						}						
 					</td>
 					<td>
 						@Html.ActionLink("Edit", "Edit",  item ) |

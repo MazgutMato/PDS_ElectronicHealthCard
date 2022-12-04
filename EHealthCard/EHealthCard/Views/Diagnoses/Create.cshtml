@@ -34,11 +34,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" accept="image/*" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <input asp-for="ImageFile" class="cancel form-control" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" formnovalidate="formnovalidate" class="btn btn-primary" />
             </div>
         </form>
     </div>

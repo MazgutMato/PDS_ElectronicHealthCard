@@ -1,16 +1,16 @@
-﻿@model IEnumerable<EHealthCard.Models.Diagnosis>
+﻿@model IEnumerable<EHealthCard.Models.Hospitalization>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Diagnosis</h1>
+<h1>Hospitalizations</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <p>
-    <a asp-action="Search">Search Diagnosis</a>
+    <a asp-action="Search">Search Hospitalizations</a>
 </p>
 @if (Model.Count() != 0)
 {
@@ -27,11 +27,9 @@
                     @Html.DisplayNameFor(model => model.DateStart)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DiagnosisId)
+                    @Html.DisplayNameFor(model => model.DateEnd)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Document)
-                </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -48,21 +46,15 @@
                         @item.DateStart.ToString("dd.MM.yyyy")
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DiagnosisId)
+                        @if (item.DateEnd != null)
+						{
+							@item.DateEnd?.ToString("dd.MM.yyyy");
+						}
                     </td>
                     <td>
-                        @{
-                            if (item.Document.Length != 0)
-                            {
-                                var base64 = Convert.ToBase64String(item.Document);
-                                var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
-                                <img src="@imgSrc" width="240" height="240" />
-                            }
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink("Details", "Details", new {start = item.DateStart, p_id = item.PersonId, hos_name = item.HospitalName, dia_id = item.DiagnosisId }) |
-                        @Html.ActionLink("Delete", "Delete",  new {start = item.DateStart, p_id = item.PersonId, hos_name = item.HospitalName, dia_id = item.DiagnosisId })
+                        @Html.ActionLink("Edit", "Edit", item ) |
+                        @Html.ActionLink("Details", "Details", item) |
+                        @Html.ActionLink("Delete", "Delete", item)
                     </td>
                 </tr>
             }
