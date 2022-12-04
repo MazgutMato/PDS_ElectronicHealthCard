@@ -11,23 +11,42 @@
     <h4>Diagnosis</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PersonId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PersonId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HospitalName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HospitalName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateStart)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateStart)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DiagnosisId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DiagnosisId)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Document)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Document)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DiagnosisNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DiagnosisNavigation.DiagnosisId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hospitalization)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hospitalization.HospitalName)
+        <dd class="col-sm-10">
+            @{
+                if (Model.Document.Length != 0)
+                {
+                    var base64 = Convert.ToBase64String(Model.Document);
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    <img src="@imgSrc" />
+                }
+            }
         </dd>
     </dl>
     
@@ -37,6 +56,5 @@
         <input type="hidden" asp-for="PersonId" />
         <input type="hidden" asp-for="DiagnosisId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
     </form>
 </div>

@@ -9,6 +9,7 @@ namespace EHealthCard.Models
     public partial class Diagnosis
     {
         [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DateStart { get; set; }
 
         [Required]
@@ -23,8 +24,11 @@ namespace EHealthCard.Models
         [StringLength(5, ErrorMessage = "Diagnoses Type ID has to be 5 chars long", MinimumLength = 5)]
         public string DiagnosisId { get; set; } = null!;
 
-        [Required]
         public byte[]? Document { get; set; }
+
+        [NotMapped]
+        public IFormFile ImageFile { get; set; } = null!;
+
 
         public virtual DiagnosesType DiagnosisNavigation { get; set; } = null!;
         public virtual Hospitalization Hospitalization { get; set; } = null!;

@@ -149,8 +149,8 @@ namespace EHealthCardApp.Controllers
             {
                 TempData["Message"] = "Data Edition Failed";
                 return View(insurance);
-            } 
-            
+            }
+
         }
 
         // GET: Insurances/Delete/5
@@ -184,27 +184,27 @@ namespace EHealthCardApp.Controllers
             try
             {
                 if (_context.Insurances == null)
-            {
-                return Problem("Entity set 'EHealthCardContext.Insurances'  is null.");
-            }
-            if (insurance != null)
-            {
-                TempData["Message"] = "Data Deleted";
-                _context.Insurances.Remove(insurance);
-            }
-            else
-            {
-                TempData["Message"] = "Data Deletion Failed";
-            }
+                {
+                    return Problem("Entity set 'EHealthCardContext.Insurances'  is null.");
+                }
+                if (insurance != null)
+                {
+                    TempData["Message"] = "Data Deleted";
+                    _context.Insurances.Remove(insurance);
+                }
+                else
+                {
+                    TempData["Message"] = "Data Deletion Failed";
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
             catch
             {
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
-    }
-}
+            }
+        }
     }
 }

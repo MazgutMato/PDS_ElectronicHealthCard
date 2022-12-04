@@ -80,7 +80,6 @@ namespace EHealthCard.Controllers
             }
 
             OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
-
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = conn;
             cmd.CommandText = "select get_person_inf(:P_ID) as ret from dual";
@@ -95,6 +94,8 @@ namespace EHealthCard.Controllers
                 ret_string = reader.GetString(0);
             }
             reader.Close();
+            conn.Close();
+
             string[] values = ret_string.Split(';');
             person.FirstName = values[0];
             person.LastName = values[1];

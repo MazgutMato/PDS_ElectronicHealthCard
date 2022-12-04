@@ -1,22 +1,22 @@
-﻿@model EHealthCard.Models.Payment
+﻿@model EHealthCard.Models.Diagnosis
 
 @{
     ViewData["Title"] = "Search";
 }
 
-<h1>Search Payments</h1>
+<h1>Search Diagnosis</h1>
 <hr />
 <form asp-action="SearchItems">
     <div class="row from-group">
         <div class="col">
+            <label asp-for="PersonId" class="control-label"></label>
+            <input asp-for="PersonId" class="form-control" />
+            <span asp-validation-for="PersonId" class="text-danger"></span>
+        </div>
+        <div class="col">
             <label asp-for="HospitalName" class="control-label"></label>
             <input asp-for="HospitalName" class="form-control" />
             <span asp-validation-for="HospitalName" class="text-danger"></span>
-        </div>
-        <div class="col">
-            <label asp-for="CompId" class="control-label"></label>
-            <input asp-for="CompId" class="form-control" />
-            <span asp-validation-for="CompId" class="text-danger"></span>
         </div>
         <div class="col align-self-center">
             <input type="submit" value="List" class="btn btn-primary" />
