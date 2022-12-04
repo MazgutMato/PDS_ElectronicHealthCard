@@ -62,12 +62,22 @@ namespace EHealthCard.Controllers
         {
             var random = new Random();
             var year = this.RandomString("0123456789", 2, 2, false, false);
-            var month = random.Next(1, 13);
-            if (random.Next(0,2) == 0)
+            var month = 0;
+            var day = 0;
+            if(year == "22")
             {
-                month += 50;
-            }
-            var day = random.Next(0, 29);
+                year = "21";
+                month = 1;
+                day = 1;
+            } else
+            {
+                month = random.Next(1, 13);
+                if (random.Next(0, 2) == 0)
+                {
+                    month += 50;
+                }
+                day = random.Next(1, 27);
+            }            
 
             if(month < 10)
             {
@@ -252,21 +262,36 @@ namespace EHealthCard.Controllers
             }
             await _context.SaveChangesAsync();
 
-            //Incurencies ended
+            //Incurencies ended and not insured now
+            var NotInsured = new List<Person>(people);
             count = 0;
-            while (count != 600)
+            while (count != 200)
             {
-                var person = people[random.Next(people.Count)];
+                var person = NotInsured[random.Next(NotInsured.Count)];
                 var comp = companies[random.Next(companies.Count)];
 
                 var insurance = new Insurance();
                 insurance.PersonId = person.PersonId;
                 insurance.CompId = comp.CompId;
-                int days = random.Next(365 * yearsBack);
-                var starDate = DateTime.Now.AddDays(-days);
-                var endDate = DateTime.Now.AddDays(-random.Next(days));
+
+                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
+                if (year < 23)
+                {
+                    year += 2000;
+                }
+                else
+                {
+                    year += 1900;
+                }
+                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
+                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
+                var birthDate = new DateTime(year, month, day);
+
+                //Generate
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
                 insurance.DateStart = starDate;
-                insurance.DateEnd = endDate;
+                insurance.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays));
+
                 var res = false;
                 try
                 {
@@ -281,25 +306,39 @@ namespace EHealthCard.Controllers
                 if (res)
                 {
                     count++;
+                    NotInsured.Remove(person);
                 }
             }
             await _context.SaveChangesAsync();
 
             //Incurencies actual
-            var NotInsured = new List<Person>(people);
             var Insured = new List<Person>();
             count = 0;
-            while (count != 800)
+            while (count != 600)
             {
                 var person = NotInsured[random.Next(NotInsured.Count)];
                 var comp = companies[random.Next(companies.Count)];
 
+                //Actual insurance
                 var insurance = new Insurance();
                 insurance.PersonId = person.PersonId;
                 insurance.CompId = comp.CompId;
 
-                int days = random.Next(365 * yearsBack);
-                var starDate = DateTime.Now.AddDays(-days);
+                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
+                if (year < 22)
+                {
+                    year += 2000;
+                }
+                else
+                {
+                    year += 1900;
+                }
+                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
+                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
+                var birthDate = new DateTime(year, month, day);
+
+                //Set date
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
                 insurance.DateStart = starDate;
 
                 var res = false;
@@ -416,7 +455,7 @@ namespace EHealthCard.Controllers
 
             //Hospitalizations ended
             count = 0;
-            while (count != 1)
+            while (count != 200)
             {
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
@@ -424,11 +463,24 @@ namespace EHealthCard.Controllers
                 var hospitalization = new Hospitalization();
                 hospitalization.HospitalName = hospital.HospitalName;
                 hospitalization.PersonId = person.PersonId;
-                int days = random.Next(365 * yearsBack);
-                var starDate = DateTime.Now.AddDays(-days);
-                var endDate = DateTime.Now.AddDays(-random.Next(days));
+
+                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
+                if (year < 23)
+                {
+                    year += 2000;
+                }
+                else
+                {
+                    year += 1900;
+                }
+                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
+                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
+                var birthDate = new DateTime(year, month, day);
+
+                //Generate
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
                 hospitalization.DateStart = starDate;
-                hospitalization.DateEnd = endDate;
+                hospitalization.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays));
 
                 var res = false;
                 try
@@ -446,7 +498,7 @@ namespace EHealthCard.Controllers
                     count++;
 
                     //Diagnoses
-                    var diagnosesCount = 1;//random.Next(1, 3);
+                    var diagnosesCount = random.Next(1, 3);
                     while (diagnosesCount > 0)
                     {
                         var hospDiagnoze = new Diagnosis();
@@ -455,7 +507,7 @@ namespace EHealthCard.Controllers
                         hospDiagnoze.DateStart = hospitalization.DateStart;
                         hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
 
-                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\1.jpg";
+                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1,11) + ".jpg";
                         FileStream fls = null;
                         try
                         {
@@ -465,7 +517,7 @@ namespace EHealthCard.Controllers
                         {
                             var exept = ex;
                         }
-                        
+
                         //a byte array to read the image 
                         byte[] blob = new byte[fls.Length];
                         fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
@@ -488,6 +540,7 @@ namespace EHealthCard.Controllers
                             diagnosesCount--;
                         }
                     }
+                    Insured.Remove(person);
                 }
             }
             await _context.SaveChangesAsync();
@@ -502,8 +555,22 @@ namespace EHealthCard.Controllers
                 var hospitalization = new Hospitalization();
                 hospitalization.HospitalName = hospital.HospitalName;
                 hospitalization.PersonId = person.PersonId;
-                int days = random.Next(365 * yearsBack);
-                var starDate = DateTime.Now.AddDays(-days);
+
+                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
+                if (year < 22)
+                {
+                    year += 2000;
+                }
+                else
+                {
+                    year += 1900;
+                }
+                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
+                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
+                var birthDate = new DateTime(year, month, day);
+
+                //Set date
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
                 hospitalization.DateStart = starDate;
 
                 var res = false;
@@ -536,6 +603,24 @@ namespace EHealthCard.Controllers
                         hospDiagnoze.PersonId = hospitalization.PersonId;
                         hospDiagnoze.DateStart = hospitalization.DateStart;
                         hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+
+                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
+                        FileStream fls = null;
+                        try
+                        {
+                            fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                        }
+                        catch (Exception ex)
+                        {
+                            var exept = ex;
+                        }
+
+                        //a byte array to read the image 
+                        byte[] blob = new byte[fls.Length];
+                        fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                        fls.Close();
+                        hospDiagnoze.Document = blob;
+
                         var resDiagnose = false;
                         try
                         {
