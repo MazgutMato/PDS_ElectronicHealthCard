@@ -285,12 +285,12 @@ namespace EHealthCard.Controllers
                 }
                 var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day);
+                var birthDate = new DateTime(year, month, day).Date;
 
                 //Generate
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - birthDate.Date).TotalDays)).Date;
                 insurance.DateStart = starDate;
-                insurance.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays));
+                insurance.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - starDate.Date).TotalDays)).Date;
 
                 var res = false;
                 try
@@ -335,10 +335,10 @@ namespace EHealthCard.Controllers
                 }
                 var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day);
+                var birthDate = new DateTime(year, month, day).Date;
 
                 //Set date
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - birthDate.Date).TotalDays)).Date;
                 insurance.DateStart = starDate;
 
                 var res = false;
@@ -373,10 +373,10 @@ namespace EHealthCard.Controllers
                 payment.CompId = comp.CompId;
 
                 int days = random.Next(365 * yearsBack);
-                var date = DateTime.Now.AddDays(-days);
+                var date = DateTime.Now.AddDays(-days).Date;
                 var period = date.AddDays(-random.Next(365));
                 payment.PaymentDate = date;
-                payment.PaymentPeriod = new DateTime(period.Year, period.Month, 1);
+                payment.PaymentPeriod = new DateTime(period.Year, period.Month, 1).Date;
                 var XmlDetails = new StringBuilder();
                 using (XmlWriter writer = XmlWriter.Create(XmlDetails))
                 {
@@ -475,12 +475,12 @@ namespace EHealthCard.Controllers
                 }
                 var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day);
+                var birthDate = new DateTime(year, month, day).Date;
 
                 //Generate
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
                 hospitalization.DateStart = starDate;
-                hospitalization.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays));
+                hospitalization.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays)).Date;
 
                 var res = false;
                 try
@@ -507,22 +507,25 @@ namespace EHealthCard.Controllers
                         hospDiagnoze.DateStart = hospitalization.DateStart;
                         hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
 
-                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1,11) + ".jpg";
-                        FileStream fls = null;
-                        try
+                        if (random.Next(0, 2) == 0)
                         {
-                            fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                        }
-                        catch (Exception ex)
-                        {
-                            var exept = ex;
-                        }
+                            string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
+                            FileStream fls = null;
+                            try
+                            {
+                                fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                            }
+                            catch (Exception ex)
+                            {
+                                var exept = ex;
+                            }
 
-                        //a byte array to read the image 
-                        byte[] blob = new byte[fls.Length];
-                        fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
-                        fls.Close();
-                        hospDiagnoze.Document = blob;
+                            //a byte array to read the image 
+                            byte[] blob = new byte[fls.Length];
+                            fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                            fls.Close();
+                            hospDiagnoze.Document = blob;
+                        }
 
                         var resDiagnose = false;
                         try
@@ -567,10 +570,10 @@ namespace EHealthCard.Controllers
                 }
                 var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day);
+                var birthDate = new DateTime(year, month, day).Date;
 
                 //Set date
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays));
+                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
                 hospitalization.DateStart = starDate;
 
                 var res = false;
@@ -604,22 +607,26 @@ namespace EHealthCard.Controllers
                         hospDiagnoze.DateStart = hospitalization.DateStart;
                         hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
 
-                        string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
-                        FileStream fls = null;
-                        try
+                        if(random.Next(0,2) == 0)
                         {
-                            fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                        }
-                        catch (Exception ex)
-                        {
-                            var exept = ex;
-                        }
+                            string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
+                            FileStream fls = null;
+                            try
+                            {
+                                fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                            }
+                            catch (Exception ex)
+                            {
+                                var exept = ex;
+                            }
 
-                        //a byte array to read the image 
-                        byte[] blob = new byte[fls.Length];
-                        fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
-                        fls.Close();
-                        hospDiagnoze.Document = blob;
+                            //a byte array to read the image 
+                            byte[] blob = new byte[fls.Length];
+                            fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                            fls.Close();
+                            hospDiagnoze.Document = blob;
+                        }
+                       
 
                         var resDiagnose = false;
                         try
