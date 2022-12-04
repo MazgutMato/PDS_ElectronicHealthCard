@@ -61,17 +61,17 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-4">
-            @Html.DisplayNameFor(model => model.PaymentDate)
-        </dt>
-        <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.PaymentDate)
-        </dd>
-        <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.PaymentPeriod)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.PaymentPeriod)
+            @Model.PaymentPeriod.ToString("dd.MM.yyyy")
         </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
+        <dd class="col-sm-8">
+            @Model.PaymentDate.ToString("dd.MM.yyyy")
+        </dd>       
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.Amount)
         </dt>

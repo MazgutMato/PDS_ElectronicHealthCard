@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 
-namespace EHealthCardApp.Controllers
+namespace EHealthCard.Controllers
 {
     public class InsurancesController : Controller
     {
@@ -31,13 +31,17 @@ namespace EHealthCardApp.Controllers
 
         public async Task<IActionResult> SearchItems([Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
+            //ONLY DATE
+            insurance.DateStart = insurance.DateStart.Date;
+            insurance.DateEnd = insurance.DateEnd?.Date;
+
             TempData["Message"] = "Corresponding Data Listed";
-            if (String.IsNullOrEmpty(insurance.PersonId) && String.IsNullOrEmpty(insurance.CompId))
+            if (string.IsNullOrEmpty(insurance.PersonId) && string.IsNullOrEmpty(insurance.CompId))
             {
                 return View("Index", new List<Insurance>());
             }
 
-            if (String.IsNullOrEmpty(insurance.CompId))
+            if (string.IsNullOrEmpty(insurance.CompId))
             {
                 return View("Index", await _context.Insurances
                           .Include(p => p.Comp)
@@ -46,7 +50,7 @@ namespace EHealthCardApp.Controllers
                           .ToListAsync());
             }
 
-            if (String.IsNullOrEmpty(insurance.PersonId))
+            if (string.IsNullOrEmpty(insurance.PersonId))
             {
                 return View("Index", await _context.Insurances
                           .Include(p => p.Comp)
@@ -66,6 +70,10 @@ namespace EHealthCardApp.Controllers
         // GET: Insurances/Details/5
         public async Task<IActionResult> Details(Insurance p_insurance)
         {
+            //ONLY DATE
+            p_insurance.DateStart = p_insurance.DateStart.Date;
+            p_insurance.DateEnd = p_insurance.DateEnd?.Date;
+
             if (_context.Insurances == null)
             {
                 return NotFound();
@@ -99,6 +107,10 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
+            //ONLY DATE
+            insurance.DateStart = insurance.DateStart.Date;
+            insurance.DateEnd = insurance.DateEnd?.Date;
+
             try
             {
                 _context.Add(insurance);
@@ -108,7 +120,7 @@ namespace EHealthCardApp.Controllers
             }
             catch (Exception ex)
             {
-
+                TempData["Message"] = "Data Creation Failed";
             }
             TempData["Message"] = "Data Creation Failed";
             return View(insurance);
@@ -116,7 +128,11 @@ namespace EHealthCardApp.Controllers
 
         // GET: Insurances/Edit/5
         public async Task<IActionResult> Edit(Insurance p_insurance)
-        {
+        {   
+            //ONLY DATE
+            p_insurance.DateStart = p_insurance.DateStart.Date;
+            p_insurance.DateEnd = p_insurance.DateEnd?.Date;
+
             if (_context.Insurances == null)
             {
                 return NotFound();
@@ -138,6 +154,10 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
+            //ONLY DATE
+            insurance.DateStart = insurance.DateStart.Date;
+            insurance.DateEnd = insurance.DateEnd?.Date;
+
             try
             {
                 _context.Update(insurance);
@@ -156,6 +176,10 @@ namespace EHealthCardApp.Controllers
         // GET: Insurances/Delete/5
         public async Task<IActionResult> Delete(Insurance p_insurance)
         {
+            //ONLY DATE
+            p_insurance.DateStart = p_insurance.DateStart.Date;
+            p_insurance.DateEnd = p_insurance.DateEnd?.Date;
+
             if (_context.Insurances == null)
             {
                 return NotFound();
@@ -181,6 +205,10 @@ namespace EHealthCardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id, [Bind("PersonId,CompId,DateStart,DateEnd")] Insurance insurance)
         {
+            //ONLY DATE
+            insurance.DateStart = insurance.DateStart.Date;
+            insurance.DateEnd = insurance.DateEnd?.Date;
+
             try
             {
                 if (_context.Insurances == null)

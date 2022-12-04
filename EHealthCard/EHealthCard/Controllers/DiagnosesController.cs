@@ -14,6 +14,7 @@ using System.Reflection.Metadata;
 using System.Globalization;
 using OracleInternal.SqlAndPlsqlParser;
 using System.IO;
+using System.Collections;
 
 namespace EHealthCard.Controllers
 {
@@ -39,6 +40,9 @@ namespace EHealthCard.Controllers
 
         public async Task<IActionResult> SearchItems([Bind("DateStart,HospitalName,PersonId,DiagnosisId,Document")] Diagnosis diagnosis)
         {
+            //ONLY DATE
+            diagnosis.DateStart = diagnosis.DateStart.Date;
+
             TempData["Message"] = "Corresponding Data Listed";
             if (String.IsNullOrEmpty(diagnosis.PersonId) && String.IsNullOrEmpty(diagnosis.HospitalName))
             {
@@ -99,6 +103,9 @@ namespace EHealthCard.Controllers
         // GET: Diagnoses/Details/5
         public async Task<IActionResult> Details(DateTime start, string p_id, string hos_name, string dia_id)
         {
+            //ONLY DATE
+            start = start.Date;
+
             if (start == null || String.IsNullOrEmpty(p_id)
                 || String.IsNullOrEmpty(hos_name)
                 || String.IsNullOrEmpty(dia_id))
@@ -158,6 +165,9 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DateStart,HospitalName,PersonId,DiagnosisId,Document,ImageFile")] Diagnosis diagnosis)
         {
+            //ONLY DATE
+            diagnosis.DateStart = diagnosis.DateStart.Date;
+
             if (diagnosis.ImageFile != null)
             {
                 byte[] blob = new byte[diagnosis.ImageFile.Length];
@@ -169,6 +179,7 @@ namespace EHealthCard.Controllers
             {
                 _context.Add(diagnosis);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Created";
                 return RedirectToAction(nameof(Index));
             } catch
             {
@@ -235,6 +246,9 @@ namespace EHealthCard.Controllers
         // GET: Diagnoses/Delete/5
         public async Task<IActionResult> Delete(DateTime start, string p_id, string hos_name, string dia_id)
         {
+            //ONLY DATE
+            start = start.Date;
+
             if (start == null || String.IsNullOrEmpty(p_id)
                 || String.IsNullOrEmpty(hos_name)
                 || String.IsNullOrEmpty(dia_id))
@@ -287,6 +301,9 @@ namespace EHealthCard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id, [Bind("DateStart,HospitalName,PersonId,DiagnosisId,Document")] Diagnosis diagnosis)
         {
+            //ONLY DATE
+            diagnosis.DateStart = diagnosis.DateStart.Date;
+
             try
             {
                 if (_context.Diagnoses == null)
