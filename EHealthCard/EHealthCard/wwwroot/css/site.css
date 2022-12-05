@@ -1,18 +1,32 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+.btn-info, .navbar, .footer {
+    background-color: #17a2b8 !important;
+}
+
+hr {
+    background-color: black !important;
+    height: 1px;
+    border: 0;
+}
+
+.container {
+    color: black
 }
