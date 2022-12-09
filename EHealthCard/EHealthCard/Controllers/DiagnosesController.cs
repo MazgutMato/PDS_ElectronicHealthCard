@@ -187,61 +187,92 @@ namespace EHealthCard.Controllers
                 return View(diagnosis);
             }                         
         }
+        // GET: Diagnoses1/Edit/5
+        public async Task<IActionResult> Edit(DateTime start, string p_id, string hos_name, string dia_id)
+        {
+            //ONLY DATE
+            start = start.Date;
 
-        //// GET: Diagnoses/Edit/5
-        //public async Task<IActionResult> Edit(DateTime? id)
-        //{
-        //    if (id == null || _context.Diagnoses == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (start == null || String.IsNullOrEmpty(p_id)
+                || String.IsNullOrEmpty(hos_name)
+                || String.IsNullOrEmpty(dia_id))
+            {
+                return NotFound();
+            }
 
-        //    var diagnosis = await _context.Diagnoses.FindAsync(id);
-        //    if (diagnosis == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["DiagnosisId"] = new SelectList(_context.DiagnosesTypes, "DiagnosisId", "DiagnosisId", diagnosis.DiagnosisId);
-        //    ViewData["DateStart"] = new SelectList(_context.Hospitalizations, "DateStart", "HospitalName", diagnosis.DateStart);
-        //    return View(diagnosis);
-        //}
+            OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = conn;
 
-        //// POST: Diagnoses/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(DateTime id, [Bind("DateStart,HospitalName,PersonId,DiagnosisId,Document")] Diagnosis diagnosis)
-        //{
-        //    if (id != diagnosis.DateStart)
-        //    {
-        //        return NotFound();
-        //    }
+            cmd.CommandText = "select * from diagnoses where person_id = :PERSON_ID" +
+                " and hospital_name = :HOSPITAL_NAME" +
+                " and date_start = :DATE_START" +
+                " and diagnosis_id = :DIAGNOSIS_ID";
+            cmd.Parameters.Add(new OracleParameter("PERSON_ID", p_id));
+            cmd.Parameters.Add(new OracleParameter("HOSPITAL_NAME", hos_name));
+            cmd.Parameters.Add(new OracleParameter("DATE_START", start));
+            cmd.Parameters.Add(new OracleParameter("DIAGNOSIS_ID", dia_id));
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(diagnosis);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!DiagnosisExists(diagnosis.DateStart))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["DiagnosisId"] = new SelectList(_context.DiagnosesTypes, "DiagnosisId", "DiagnosisId", diagnosis.DiagnosisId);
-        //    ViewData["DateStart"] = new SelectList(_context.Hospitalizations, "DateStart", "HospitalName", diagnosis.DateStart);
-        //    return View(diagnosis);
-        //}
+            conn.Open();
+            OracleDataReader oraReader = cmd.ExecuteReader();
+            Diagnosis diagnoses = new Diagnosis();
+            while (oraReader.Read())
+            {
+                byte[] document = new byte[0];
+                diagnoses.DateStart = oraReader.GetDateTime(0);
+                diagnoses.HospitalName = oraReader.GetString(1);
+                diagnoses.PersonId = oraReader.GetString(2);
+                diagnoses.DiagnosisId = oraReader.GetString(3);
+                if (oraReader.GetValue(4).ToString() != "")
+                {
+                    OracleBlob blob = oraReader.GetOracleBlob(4);
+                    document = new byte[blob.Length];
+                    blob.Read(document, 0, document.Length);
+                }
+                diagnoses.Document = document;
+                oraReader.Close();
+                conn.Close();
+                return View(diagnoses);
+            }
+
+            TempData["Message"] = "Error";
+            return View("Index");
+        }
+
+        // POST: Diagnoses/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([Bind("DateStart,HospitalName,PersonId,DiagnosisId,Document,ImageFile")] Diagnosis diagnosis)
+        {
+            //Date Only
+            diagnosis.DateStart = diagnosis.DateStart.Date;
+
+            if (diagnosis.ImageFile != null)
+            {
+                byte[] blob = new byte[diagnosis.ImageFile.Length];
+                await diagnosis.ImageFile.OpenReadStream().ReadAsync(blob);
+                diagnosis.Document = blob;
+            } else
+            {
+                diagnosis.Document = null;
+            }
+
+            try
+            {
+                _context.Update(diagnosis);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Data Edited";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Data Edition Failed";
+                return View(diagnosis);
+            }
+           
+        }
 
         // GET: Diagnoses/Delete/5
         public async Task<IActionResult> Delete(DateTime start, string p_id, string hos_name, string dia_id)
