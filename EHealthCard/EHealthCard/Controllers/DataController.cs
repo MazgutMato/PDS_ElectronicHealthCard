@@ -61,38 +61,30 @@ namespace EHealthCard.Controllers
         private string GeneratePersonId()
         {
             var random = new Random();
-            var year = this.RandomString("0123456789", 2, 2, false, false);
-            var month = 0;
-            var day = 0;
-            if(year == "22")
+            var birth = DateTime.Now.Date.AddDays(-random.Next(365, 365*80));
+            var date = birth.Year.ToString().Substring(2,2);
+            var month = birth.Month;
+            var day = birth.Day;         
+
+            if(random.Next(0,2) == 1)
             {
-                year = "21";
-                month = 1;
-                day = 1;
-            } else
-            {
-                month = random.Next(1, 13);
-                if (random.Next(0, 2) == 0)
-                {
-                    month += 50;
-                }
-                day = random.Next(1, 27);
-            }            
+                month += 50;
+            }
 
             if(month < 10)
             {
-                year += 0;               
+                date += "0";               
             }
-            year += month;
+            date += month;
 
             if (day < 10)
             {
-                year += 0;
+                date += "0";
             }
-            year += day;
-            
-            year += this.RandomString("0123456789", 4, 4, false, false);
-            return year;
+            date += day;
+
+            date += this.RandomString("0123456789", 4, 4, false, false);
+            return date;
         }
 
         private string RandomString(string chars, int minSize, int maxSize, bool firstUpper, bool allUpper)
