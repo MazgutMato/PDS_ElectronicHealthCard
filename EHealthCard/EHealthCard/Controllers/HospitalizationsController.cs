@@ -238,6 +238,7 @@ namespace EHealthCard.Controllers
             }
             
         }
+       
         public IActionResult Graph()
         {
             return View();
@@ -280,5 +281,17 @@ namespace EHealthCard.Controllers
 
             return View();
         }
+
+        public IActionResult Table()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Table(int p_year, string p_hospitalName)
+        {
+            return View();
+        }
+
     }
 }

@@ -1,0 +1,80 @@
+﻿<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
+@using (Html.BeginForm())
+{
+    <div class="row from-group">
+        <div class="col">
+            <label>Year</label>
+            <input type="number" name="year" class="form-control"></input>
+        </div>
+        <div class="col">
+            <label>Hospital Name</label>
+            <input type="text" name="year" class="form-control"></input>
+        </div>
+        <div class="col align-self-center">
+            <button type="submit" class="btn btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z" />
+                </svg>
+                Display
+            </button>
+        </div>
+    </div>
+}
+
+<div>
+    <table id="table1">
+        <thead>
+            <tr>
+                <td>Diagnoses</td>
+                <td>1.</td>
+                <td>2.</td>
+                <td>3.</td>
+                <td>4.</td>
+                <td>5.</td>
+                <td>6.</td>
+                <td>7.</td>
+                <td>8.</td>
+                <td>9.</td>
+                <td>10.</td>
+                <td>11.</td>
+                <td>12.</td>
+            </tr>
+        </thead>
+    </table>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            $("table1").dataTable({
+                "processing": true;
+                "serverSide": false;
+                "filter":true;
+                "orderMulti":true;
+                "ajax": {
+                    "url":"/Hospitalizations/Table",
+                    "type":"POST",
+                    "datatype":"json"
+                },
+                "columns": [
+                    {"data": "name","autoWidth", true },
+                    {"data": "first","autoWidth", true },
+                    {"data": "second", "autoWidth", true },
+                    {"data": "third", "autoWidth", true },
+                    {"data": "fourth", "autoWidth", true },
+                    {"data": "fifth", "autoWidth", true },
+                    {"data": "sixth","autoWidth", true },
+                    {"data": "seventh", "autoWidth", true },
+                    {"data": "eighth", "autoWidth", true },
+                    {"data": "ninth", "autoWidth", true },
+                    {"data": "tenth","autoWidth", true },
+                    {"data": "eleventh", "autoWidth", true },
+                    {"data": "twelveth","autoWidth", true },
+
+                ]
+            })
+        });
+    </script>
+}

@@ -191,6 +191,7 @@ namespace EHealthCard.Controllers
         public async Task<IActionResult> Edit(DateTime start, string p_id, string hos_name, string dia_id)
         {
             //ONLY DATE
+
             start = start.Date;
 
             if (start == null || String.IsNullOrEmpty(p_id)
