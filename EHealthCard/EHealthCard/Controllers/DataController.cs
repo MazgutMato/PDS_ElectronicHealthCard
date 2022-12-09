@@ -447,15 +447,12 @@ namespace EHealthCard.Controllers
 
             //Hospitalizations ended
             count = 0;
-            while (count != 200)
+            while (count < 200)
             {
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
 
-                var hospitalization = new Hospitalization();
-                hospitalization.HospitalName = hospital.HospitalName;
-                hospitalization.PersonId = person.PersonId;
-
+                var hospCount = random.Next(1, 5);
                 var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
                 if (year < 23)
                 {
@@ -469,176 +466,167 @@ namespace EHealthCard.Controllers
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
                 var birthDate = new DateTime(year, month, day).Date;
 
-                //Generate
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
-                hospitalization.DateStart = starDate;
-                hospitalization.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays)).Date;
+                //Ended
+                var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
+                while (count < 200 && hospCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1) )
+                {
+                    var hospitalization = new Hospitalization();
+                    hospitalization.HospitalName = hospital.HospitalName;
+                    hospitalization.PersonId = person.PersonId;
 
-                var res = false;
-                try
-                {
-                    await _context.AddAsync(hospitalization);
-                    res = true;
-                }
-                catch (Exception ex)
-                {
-                    _context.Remove(hospitalization);
-                    res = false;
-                }
-                if (res)
-                {
-                    count++;
+                    //Generate
+                    var starDate = firstDate.AddDays(random.Next(0, (int)(DateTime.Now - firstDate).TotalDays)).Date;
+                    hospitalization.DateStart = starDate;
+                    hospitalization.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now - starDate).TotalDays)).Date;
 
-                    //Diagnoses
-                    var diagnosesCount = random.Next(1, 3);
-                    while (diagnosesCount > 0)
+                    var res = false;
+                    try
                     {
-                        var hospDiagnoze = new Diagnosis();
-                        hospDiagnoze.HospitalName = hospitalization.HospitalName;
-                        hospDiagnoze.PersonId = hospitalization.PersonId;
-                        hospDiagnoze.DateStart = hospitalization.DateStart;
-                        hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
-
-                        if (random.Next(0, 2) == 0)
+                        await _context.AddAsync(hospitalization);
+                        res = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        _context.Remove(hospitalization);
+                        res = false;
+                    }
+                    if (res)
+                    {
+                        count++;
+                        hospCount--;
+                        if(hospitalization.DateEnd != null)
                         {
-                            string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
-                            FileStream fls = null;
+                            firstDate = (DateTime)hospitalization.DateEnd;
+                        }                        
+
+                        //Diagnoses
+                        var diagnosesCount = random.Next(1, 3);
+                        while (diagnosesCount > 0)
+                        {
+                            var hospDiagnoze = new Diagnosis();
+                            hospDiagnoze.HospitalName = hospitalization.HospitalName;
+                            hospDiagnoze.PersonId = hospitalization.PersonId;
+                            hospDiagnoze.DateStart = hospitalization.DateStart;
+                            hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+
+                            if (random.Next(0, 2) == 0)
+                            {
+                                string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
+                                FileStream fls = null;
+                                try
+                                {
+                                    fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var exept = ex;
+                                }
+
+                                //a byte array to read the image 
+                                byte[] blob = new byte[fls.Length];
+                                fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                                fls.Close();
+                                hospDiagnoze.Document = blob;
+                            }
+
+                            var resDiagnose = false;
                             try
                             {
-                                fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                                await _context.AddAsync(hospDiagnoze);
+                                resDiagnose = true;
                             }
                             catch (Exception ex)
                             {
-                                var exept = ex;
+                                _context.Remove(hospDiagnoze);
+                                resDiagnose = false;
+                            }
+                            if (resDiagnose)
+                            {
+                                diagnosesCount--;
+                            }
+                        }
+                        Insured.Remove(person);
+                    }
+                }
+
+                //Actual
+                if(random.Next(0,2) == 1)
+                {
+                    var hospitalization = new Hospitalization();
+                    hospitalization.HospitalName = hospital.HospitalName;
+                    hospitalization.PersonId = person.PersonId;
+
+                    //Generate
+                    var starDate = firstDate.AddDays(random.Next(0, (int)(DateTime.Now - firstDate).TotalDays)).Date;
+                    hospitalization.DateStart = starDate;                    
+
+                    var res = false;
+                    try
+                    {
+                        await _context.AddAsync(hospitalization);
+                        res = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        _context.Remove(hospitalization);
+                        res = false;
+                    }
+                    if (res)
+                    {
+                        count++;
+
+                        //Diagnoses
+                        var diagnosesCount = random.Next(1, 3);
+                        while (diagnosesCount > 0)
+                        {
+                            var hospDiagnoze = new Diagnosis();
+                            hospDiagnoze.HospitalName = hospitalization.HospitalName;
+                            hospDiagnoze.PersonId = hospitalization.PersonId;
+                            hospDiagnoze.DateStart = hospitalization.DateStart;
+                            hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
+
+                            if (random.Next(0, 2) == 0)
+                            {
+                                string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
+                                FileStream fls = null;
+                                try
+                                {
+                                    fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var exept = ex;
+                                }
+
+                                //a byte array to read the image 
+                                byte[] blob = new byte[fls.Length];
+                                fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
+                                fls.Close();
+                                hospDiagnoze.Document = blob;
                             }
 
-                            //a byte array to read the image 
-                            byte[] blob = new byte[fls.Length];
-                            fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
-                            fls.Close();
-                            hospDiagnoze.Document = blob;
+                            var resDiagnose = false;
+                            try
+                            {
+                                await _context.AddAsync(hospDiagnoze);
+                                resDiagnose = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                _context.Remove(hospDiagnoze);
+                                resDiagnose = false;
+                            }
+                            if (resDiagnose)
+                            {
+                                diagnosesCount--;
+                            }
                         }
-
-                        var resDiagnose = false;
-                        try
-                        {
-                            await _context.AddAsync(hospDiagnoze);
-                            resDiagnose = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            _context.Remove(hospDiagnoze);
-                            resDiagnose = false;
-                        }
-                        if (resDiagnose)
-                        {
-                            diagnosesCount--;
-                        }
+                        Insured.Remove(person);
                     }
-                    Insured.Remove(person);
                 }
             }
             await _context.SaveChangesAsync();
 
-            //Hospitalizations actual
-            count = 0;
-            while (count != 200)
-            {
-                var person = Insured[random.Next(Insured.Count)];
-                var hospital = hospitals[random.Next(hospitals.Count)];
-
-                var hospitalization = new Hospitalization();
-                hospitalization.HospitalName = hospital.HospitalName;
-                hospitalization.PersonId = person.PersonId;
-
-                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
-                if (year < 22)
-                {
-                    year += 2000;
-                }
-                else
-                {
-                    year += 1900;
-                }
-                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
-                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day).Date;
-
-                //Set date
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
-                hospitalization.DateStart = starDate;
-
-                var res = false;
-                try
-                {
-                    await _context.AddAsync(hospitalization);
-                    if (hospital.Capacity < 0)
-                    {
-                        throw new Exception();
-                    }
-                    res = true;
-                }
-                catch (Exception ex)
-                {
-                    _context.Remove(hospitalization);
-                    res = false;
-                }
-                if (res)
-                {
-                    Insured.Remove(person);
-                    hospital.Capacity--;
-                    count++;
-
-                    //Diagnoses
-                    var diagnosesCount = random.Next(1, 3);
-                    while (diagnosesCount > 0)
-                    {
-                        var hospDiagnoze = new Diagnosis();
-                        hospDiagnoze.HospitalName = hospitalization.HospitalName;
-                        hospDiagnoze.PersonId = hospitalization.PersonId;
-                        hospDiagnoze.DateStart = hospitalization.DateStart;
-                        hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
-
-                        if(random.Next(0,2) == 0)
-                        {
-                            string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
-                            FileStream fls = null;
-                            try
-                            {
-                                fls = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                            }
-                            catch (Exception ex)
-                            {
-                                var exept = ex;
-                            }
-
-                            //a byte array to read the image 
-                            byte[] blob = new byte[fls.Length];
-                            fls.Read(blob, 0, System.Convert.ToInt32(fls.Length));
-                            fls.Close();
-                            hospDiagnoze.Document = blob;
-                        }
-                       
-
-                        var resDiagnose = false;
-                        try
-                        {
-                            await _context.AddAsync(hospDiagnoze);
-                            resDiagnose = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            _context.Remove(hospDiagnoze);
-                            resDiagnose = false;
-                        }
-                        if (resDiagnose)
-                        {
-                            diagnosesCount--;
-                        }
-                    }
-                }
-            }
-            await _context.SaveChangesAsync();
 
             TempData["Message"] = "Data successfully generated!";
             return RedirectToAction(nameof(Index));
