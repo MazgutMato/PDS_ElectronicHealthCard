@@ -509,7 +509,7 @@ namespace EHealthCard.Controllers
 
                         if (random.Next(0, 2) == 0)
                         {
-                            string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
+                            string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
                             FileStream fls = null;
                             try
                             {
@@ -609,7 +609,7 @@ namespace EHealthCard.Controllers
 
                         if(random.Next(0,2) == 0)
                         {
-                            string filePath = "C:\\Users\\matej\\Desktop\\Picture\\" + random.Next(1, 11) + ".jpg";
+                            string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
                             FileStream fls = null;
                             try
                             {
