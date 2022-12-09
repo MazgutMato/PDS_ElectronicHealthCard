@@ -4,11 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Hospital</h4>
-    <hr />
+<h3>Details</h3>
+<hr />
+<div>    
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.HospitalName)
@@ -29,7 +27,4 @@
             @Html.DisplayFor(model => model.ZipNavigation.Zip)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.HospitalName">Edit</a> |
 </div>
