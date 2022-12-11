@@ -213,7 +213,7 @@ namespace EHealthCard.Controllers
                 return View();
             }
 
-            var dataPoints = new List<DataPointLine>();
+            var dataPoints = new List<DataPoint>();
 
             for (var i = 1; i < 13; i++)
             {
@@ -233,7 +233,7 @@ namespace EHealthCard.Controllers
                 
 				while (oraReader.Read())
                 {
-                    dataPoints.Add(new DataPointLine(date.Month.ToString(), oraReader.GetInt32(0)));
+                    dataPoints.Add(new DataPoint(date.Month.ToString(), oraReader.GetInt32(0)));
                 }
                 oraReader.Close();
                 conn.Close();
@@ -246,5 +246,46 @@ namespace EHealthCard.Controllers
 
             return View();
         }
-    }
+		public IActionResult  ActualHosp()
+		{
+			return View(new List<HospitalCapacity>());
+		}
+		[HttpPost]
+		public IActionResult ActualHosp(string zip)
+		{
+            if (zip.Count() != 5)
+            {
+                return View(new List<HospitalCapacity>());
+            }
+
+            OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = conn;
+
+            cmd.CommandText = "select hospital_name, count(person_id) hosp, capacity from hospital " +
+                                "left join hospitalization using(hospital_name) " +
+                                "where ZIP = :p_zip and date_end is null " +
+                                "group by hospital_name, capacity";
+            cmd.Parameters.Add(new OracleParameter("p_zip", zip));
+
+            conn.Open();
+            OracleDataReader oraReader = cmd.ExecuteReader();
+
+            var hospRecords = new List<HospitalCapacity>();
+            while (oraReader.Read())
+            {
+                var hospRecord = new HospitalCapacity();
+                hospRecord.HospitalName = oraReader.GetString(0);
+                hospRecord.CurrentHosp = oraReader.GetInt32(1);
+                hospRecord.Capacity = oraReader.GetInt32(2);
+
+                hospRecords.Add(hospRecord);
+            }
+            oraReader.Close();
+            conn.Close();
+
+
+            return View(hospRecords);
+        }
+	}
 }
