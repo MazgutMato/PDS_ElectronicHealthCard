@@ -6,6 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
+using Oracle.ManagedDataAccess.Client;
+using System.Drawing;
+using System.IO;
+using Newtonsoft.Json;
+using System.Data;
+using NuGet.Packaging.Signing;
 
 namespace EHealthCard.Controllers
 {
@@ -194,6 +200,51 @@ namespace EHealthCard.Controllers
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
             }
+        }
+        public IActionResult Graph()
+        {
+            return View();
+        }
+		[HttpPost]
+        public IActionResult Graph(int year, string name)
+        {
+            if (year <= 0)
+            {
+                return View();
+            }
+
+            var dataPoints = new List<DataPointLine>();
+
+            for (var i = 1; i < 13; i++)
+            {
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                cmd.CommandText = "select get_hosp_count(:YEAR, :MONTH, :HOSP_NAME) from dual";
+                cmd.Parameters.Add(new OracleParameter("YEAR", year));
+                cmd.Parameters.Add(new OracleParameter("MONTH", i));
+                cmd.Parameters.Add(new OracleParameter("HOSP_NAME", name));
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+
+                var date = new DateTime(year,i,1).Date;
+                
+				while (oraReader.Read())
+                {
+                    dataPoints.Add(new DataPointLine(date.ToString("MMMM"), oraReader.GetInt32(0)));
+                }
+                oraReader.Close();
+                conn.Close();
+            }
+
+            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            ViewBag.Year = year;
+            ViewBag.Hospital = name;
+
+
+            return View();
         }
     }
 }
