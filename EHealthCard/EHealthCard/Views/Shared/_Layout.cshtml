@@ -34,7 +34,7 @@
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Cities" asp-action="Index">Cities</a>
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="Index">Hospitals</a>
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="DiagnosesTypes" asp-action="Index">Diagnoses Types</a>
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="InsuranceComps" asp-action="Index">Insurance Companies</a>                   
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="InsuranceComps" asp-action="Index">Insurance Companies</a>
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="People" asp-action="Index">People</a>
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Insurances" asp-action="Index">Insurances</a>
                                 <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="Index">Hospitalizations</a>
@@ -48,9 +48,24 @@
                                 Hospitalizations
                             </a>
                             <ul class="dropdown-menu">
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="Graph">Most common Diagnosis</a>         
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="Table">Diagnosis in Hospital over a Year</a>
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="DailyCosts">Hospitalization Costs over a Month</a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="Graph">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
+                                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z" />
+                                    </svg>
+                                    Most Common Diagnosis
+                                </a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="Table">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                    </svg>
+                                    Diagnosis in Hospital over a Year
+                                </a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitalizations" asp-action="DailyCosts">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                    </svg>
+                                    Hospitalization Costs over a Month
+                                </a>
                             </ul>
                         </li>
                         <li class="dropdown nav-item" role="button">
@@ -58,9 +73,19 @@
                                 Hospitals
                             </a>
                             <ul class="dropdown-menu">
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="ActualHosp">Actual Hospitalizations</a>
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="Graph">Hospitalizations over a Year</a>
-                                
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="ActualHosp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                    </svg>
+                                    Actual Hospitalizations
+                                </a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Hospitals" asp-action="Graph">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
+                                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z" />
+                                    </svg>
+                                    Hospitalizations over a Year
+                                </a>
+
                             </ul>
                         </li>
                         <li class="dropdown nav-item" role="button">
@@ -68,8 +93,18 @@
                                 Insurances
                             </a>
                             <ul class="dropdown-menu">
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Insurances" asp-action="MostInsured">Most Times Insured People</a>
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Insurances" asp-action="Graph">Top Insurance Companies</a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Insurances" asp-action="MostInsured">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-ul" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                    </svg>
+                                    Most Times Insured People
+                                </a>
+                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Insurances" asp-action="Graph">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
+                                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z" />
+                                    </svg>
+                                    Top Insurance Companies                                   
+                                    </a>
                             </ul>
                         </li>
                         <li class="nav-item">
