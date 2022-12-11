@@ -49,3 +49,48 @@ begin
     return to_date( str_date, 'YYYY.MM.DD' );        
 end;
 /
+
+create or replace type t_rec_hosp as object(
+    name varchar(20),
+    first_m integer,
+    second_m integer,
+    third_m integer,
+    fourth_m integer,
+    fifth_m integer,
+    sixth_m integer,
+    seven_m integer,
+    eighth_m integer,
+    ninth_m integer,
+    tent_h integer,
+    eleventh_m integer,
+    twelfth_m integer
+);
+/
+
+create or replace type t_hosp is table of t_rec_hosp;
+/
+
+create or replace function get_hosp_count
+(
+    p_year integer,
+    p_month integer,
+    p_hosp char
+)
+return integer
+is
+    p_count integer;
+begin
+    select
+    sum(case when  
+             (  extract(year from date_start) < p_year and (date_end is null or extract(year from date_end) > p_year) ) or
+             (  extract(year from date_start) = p_year and (date_end is null or extract(year from date_end) > p_year) and extract(month from date_start) <= p_month ) or
+             (  extract(year from date_start) = p_year and extract(year from date_end) = p_year and extract(month from date_start) <= p_month and extract(month from date_end) >= p_month ) or  
+             (  extract(year from date_start) < p_year and extract(year from date_end) = p_year and extract(month from date_end) >= p_month )           
+             then 1 else 0 end) into p_count
+    from hospital
+    join hospitalization using(hospital_name)
+        where extract(year from date_start) <= p_year and (date_end is null or extract(year from date_end) >= p_year) and hospital_name = p_hosp
+        group by hospital_name;
+    return p_count;     
+end;
+/

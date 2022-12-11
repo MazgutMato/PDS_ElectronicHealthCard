@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Graph";
+}
+
+<script>
+	window.onload = function () {
+
+		var chart = new CanvasJS.Chart("chartContainer", {
+			animationEnabled: true,
+			title: {
+				text: "Hospitalizations over a Month in " + @Html.Raw(ViewBag.Year)
+			},
+			axisX: {
+				valueFormatString: "DD MMM"
+			},
+			axisY: {
+				title: "Count"
+			},
+			data: [{
+				type: "spline",
+				dataPoints: @Html.Raw(ViewBag.DataPoints)
+		}]
+		});
+		chart.render();
+
+	}
+</script>
+
+@using (Html.BeginForm())
+{
+        <div class="form-group">
+            <label>Hospital</label>
+            <input type="text" name="name" class="form-control"></input>
+            <label>Year</label>
+            <input type="number" name="year" class="form-control"></input>
+            <input type="submit" class="mt-2 btn btn-info" />
+        </div>
+}
+
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
