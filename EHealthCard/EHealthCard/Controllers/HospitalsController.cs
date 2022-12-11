@@ -242,8 +242,8 @@ namespace EHealthCard.Controllers
                 }
 
                 ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-                ViewBag.Year = year;
-                ViewBag.Hospital = name;
+                ViewBag.Year = p_year;
+                ViewBag.Hospital = p_hospitalName;
 
             } catch
             {
