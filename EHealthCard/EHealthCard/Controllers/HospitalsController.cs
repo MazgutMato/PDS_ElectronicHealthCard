@@ -233,7 +233,7 @@ namespace EHealthCard.Controllers
                 
 				while (oraReader.Read())
                 {
-                    dataPoints.Add(new DataPointLine(date.ToString("MMMM"), oraReader.GetInt32(0)));
+                    dataPoints.Add(new DataPointLine(date.Month.ToString(), oraReader.GetInt32(0)));
                 }
                 oraReader.Close();
                 conn.Close();

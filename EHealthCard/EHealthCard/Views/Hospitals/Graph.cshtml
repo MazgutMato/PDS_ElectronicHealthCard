@@ -8,10 +8,10 @@
 		var chart = new CanvasJS.Chart("chartContainer", {
 			animationEnabled: true,
 			title: {
-				text: "Hospitalizations over a Month in " + @Html.Raw(ViewBag.Year)
+				text: "Count of hospitalizations over a month in " + @Html.Raw(ViewBag.Year)
 			},
 			axisX: {
-				valueFormatString: "DD MMM"
+				title: "Month"
 			},
 			axisY: {
 				title: "Count"
