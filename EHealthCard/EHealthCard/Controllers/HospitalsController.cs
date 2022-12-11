@@ -206,9 +206,9 @@ namespace EHealthCard.Controllers
             return View();
         }
 		[HttpPost]
-        public IActionResult Graph(int year, string name)
+        public IActionResult Graph(int p_year, string p_hospitalName)
         {
-            if (year <= 0)
+            if (p_year <= 0)
             {
                 return View();
             }
@@ -224,14 +224,14 @@ namespace EHealthCard.Controllers
                     cmd.Connection = conn;
 
                     cmd.CommandText = "select get_hosp_count(:YEAR, :MONTH, :HOSP_NAME) from dual";
-                    cmd.Parameters.Add(new OracleParameter("YEAR", year));
+                    cmd.Parameters.Add(new OracleParameter("YEAR", p_year));
                     cmd.Parameters.Add(new OracleParameter("MONTH", i));
-                    cmd.Parameters.Add(new OracleParameter("HOSP_NAME", name));
+                    cmd.Parameters.Add(new OracleParameter("HOSP_NAME", p_hospitalName));
 
                     conn.Open();
                     OracleDataReader oraReader = cmd.ExecuteReader();
 
-                    var date = new DateTime(year, i, 1).Date;
+                    var date = new DateTime(p_year, i, 1).Date;
 
                     while (oraReader.Read())
                     {
