@@ -114,4 +114,12 @@ select diagnosis_id,
         join hospitalization using(hospital_name)  
         join diagnoses using(person_id,hospital_name,date_start)  
         where extract(year from date_start) <= :P_YEAR and (extract(year from NVL(date_end,sysdate)) >= :P_YEAR) and hospital_name = :HOSPITAL_NAME  
-        group by diagnosis_id
+        group by diagnosis_id;
+        
+-- Top 10 Most Times insured People
+select rn, person_id, get_person_inf(person_id), ct  
+    from (select row_number() over(order by count(person_id) desc) rn,  
+            person_id, count(person_id) ct  
+            from insurance   
+            group by person_id) 
+where rn <= 10
