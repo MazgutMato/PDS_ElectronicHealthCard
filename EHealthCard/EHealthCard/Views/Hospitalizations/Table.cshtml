@@ -1,5 +1,8 @@
-﻿<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+﻿@model IEnumerable<EHealthCard.Models.HospitalizationTableRecord>
+
+@{
+    ViewData["Title"] = "Table";
+}
 
 @using (Html.BeginForm())
 {
@@ -22,3 +25,103 @@
         </div>
     </div>
 }
+
+@if (Model.Count() != 0)
+{
+    <h3 align="center">Count of Diagnosis Cases in Hospital Over Year</h3>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Diagnoses
+                </th>
+                <th>
+                    First
+                </th>
+                <th>
+                    Second
+                </th>
+                <th>
+                    Third
+                </th>
+                <th>
+                    Fourth
+                </th>
+                <th>
+                    Fifth
+                </th>
+                <th>
+                    Sixth
+                </th>
+                <th>
+                    Seventh
+                </th>
+                <th>
+                    Eighth
+                </th>
+                <th>
+                    Ninth
+                </th>
+                <th>
+                    Tenth
+                </th>
+                <th>
+                    Eleventh
+                </th>
+                <th>
+                    Twelveth
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.first)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.second)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.third)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.fourth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.fifth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.sixth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.seventh)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.eighth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ninth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tenth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.eleventh)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.twelveth)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+

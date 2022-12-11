@@ -293,7 +293,7 @@ namespace EHealthCard.Controllers
 
         public IActionResult Table()
         {
-            return View();
+            return View(new List<HospitalizationTableRecord>());
         }
 
         [HttpPost]
@@ -389,10 +389,28 @@ namespace EHealthCard.Controllers
                 conn.Open();
                 OracleDataReader oraReader = cmd.ExecuteReader();
                 Diagnosis diagnoses = new Diagnosis();
+
+
+                List<HospitalizationTableRecord> tableRecords = new List<HospitalizationTableRecord>();
                 while (oraReader.Read())
                 {
-                    return View();
+                    tableRecords.Add(new HospitalizationTableRecord(oraReader.GetString(0),
+                        oraReader.GetInt32(1),
+                        oraReader.GetInt32(2),
+                        oraReader.GetInt32(3),
+                        oraReader.GetInt32(4),
+                        oraReader.GetInt32(5),
+                        oraReader.GetInt32(6),
+                        oraReader.GetInt32(7),
+                        oraReader.GetInt32(8),
+                        oraReader.GetInt32(9),
+                        oraReader.GetInt32(10),
+                        oraReader.GetInt32(11),
+                        oraReader.GetInt32(12)));  
                 }
+                oraReader.Close();
+                conn.Close();
+                return View(tableRecords);
             } catch
             {}
 

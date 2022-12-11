@@ -9,7 +9,7 @@ namespace EHealthCard.Models
     {
         public HospitalizationTableRecord(string name, int first, int second, int third, 
             int fourth, int fifth, int sixth, int seventh, int eighth, 
-            int ninth, int eleventh, int twelveth ) 
+            int ninth, int tenth, int eleventh, int twelveth ) 
         {
             this.name = name;
             this.first = first;
