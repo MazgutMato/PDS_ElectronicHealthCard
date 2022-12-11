@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 using System.Text;
 using System.Xml;
+using Oracle.ManagedDataAccess.Client;
 
 namespace EHealthCard.Controllers
 {
@@ -286,6 +287,69 @@ namespace EHealthCard.Controllers
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
             }
+        }
+        public IActionResult PaymentsSum()
+        {
+            return View(new List<PaymentSum>());
+        }
+
+        [HttpPost]
+        public IActionResult PaymentsSum(string p_hospitalName, int p_year)
+        {
+            try
+            {
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                cmd.CommandText = "select hospital_name, comp_id, " +
+                                    "sum(case when extract(month from payment_period) = 1 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) first, " +
+                                    "sum(case when extract(month from payment_period) = 2 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) second, " +
+                                    "sum(case when extract(month from payment_period) = 3 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) third, " +
+                                    "sum(case when extract(month from payment_period) = 4 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) fourth, " +
+                                    "sum(case when extract(month from payment_period) = 5 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) fifth, " +
+                                    "sum(case when extract(month from payment_period) = 6 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) sixth, " +
+                                    "sum(case when extract(month from payment_period) = 7 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) seventh, " +
+                                    "sum(case when extract(month from payment_period) = 8 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) eighth, " +
+                                    "sum(case when extract(month from payment_period) = 9 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) ninth, " +
+                                    "sum(case when extract(month from payment_period) = 10 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) tenth, " +
+                                    "sum(case when extract(month from payment_period) = 11 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) eleventh, " +
+                                    "sum(case when extract(month from payment_period) = 12 then to_number(extractValue(payment.details, '/Payment/Amount')) else 0 end) twelfth " +
+                                        "from payment " +
+                                        "where hospital_name = :p_hospitalName and extract(year from payment_period) = :p_year " +
+                                        "group by hospital_name, comp_id";
+                
+                cmd.Parameters.Add(new OracleParameter("p_hospitalName", p_hospitalName));
+                cmd.Parameters.Add(new OracleParameter("p_year", p_year));
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+
+                var paymentsRecords = new List<PaymentSum>();
+                while (oraReader.Read())
+                {
+                    var paymentRecord = new PaymentSum();
+                    paymentRecord.HospitalName = oraReader.GetString(0);
+                    paymentRecord.CompID = oraReader.GetString(1);
+                    
+                    for(int i = 2; i < 14; i++)
+                    {
+                        paymentRecord.Payments.Add(oraReader.GetInt32(i));
+                    }
+
+                    paymentsRecords.Add(paymentRecord);
+                }
+                oraReader.Close();
+                conn.Close();
+
+
+                return View(paymentsRecords);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return View();
         }
     }
 }
