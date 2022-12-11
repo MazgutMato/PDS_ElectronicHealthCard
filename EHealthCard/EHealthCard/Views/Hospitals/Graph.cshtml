@@ -3,38 +3,49 @@
 }
 
 <script>
-	window.onload = function () {
+    window.onload = function () {
 
-		var chart = new CanvasJS.Chart("chartContainer", {
-			animationEnabled: true,
-			title: {
-				text: "Count of hospitalizations over a month in " + @Html.Raw(ViewBag.Year)
-			},
-			axisX: {
-				title: "Month"
-			},
-			axisY: {
-				title: "Count"
-			},
-			data: [{
-				type: "spline",
-				dataPoints: @Html.Raw(ViewBag.DataPoints)
-		}]
-		});
-		chart.render();
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Count of hospitalizations over a year in " + @Html.Raw(ViewBag.Year)
+                },
+            axisX: {
+                title: "Month"
+            },
+            axisY: {
+                title: "Count"
+            },
+            data: [{
+                type: "spline",
+                dataPoints: @Html.Raw(ViewBag.DataPoints)
+            }]
+        });
+        chart.render();
 
-	}
+    }
 </script>
 
 @using (Html.BeginForm())
 {
-        <div class="form-group">
+    <div class="row form-group">
+        <div class="col">
             <label>Hospital</label>
             <input type="text" name="name" class="form-control"></input>
+        </div>
+        <div class="col">
             <label>Year</label>
             <input type="number" name="year" class="form-control"></input>
-            <input type="submit" class="mt-2 btn btn-info" />
         </div>
+        <div class="col align-self-center">
+            <button type="submit" class="btn btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z" />
+                </svg>
+                Display
+            </button>
+        </div>
+    </div>
 }
 
 <div id="chartContainer" style="height: 370px; width: 100%;"></div>

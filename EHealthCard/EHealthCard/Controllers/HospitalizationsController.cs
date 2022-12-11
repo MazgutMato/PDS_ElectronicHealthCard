@@ -252,35 +252,42 @@ namespace EHealthCard.Controllers
             {
                 return View();
             }
-
-            OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
-            OracleCommand cmd = new OracleCommand();
-            cmd.Connection = conn;
-
-            cmd.CommandText = "select row_number() over(order by pocet desc) poradie , diagnosis_id, pocet " +
-                                "from " +
-                                "(" +
-                                    "select diagnosis_id, count(diagnosis_id) pocet from diagnoses " +
-                                        "where to_char(date_start, 'YYYY') like ::P_YEAR " +
-                                            "group by diagnosis_id" +
-                                ")fetch first 10 rows only";
-            cmd.Parameters.Add(new OracleParameter("YEAR", year));
-
-            conn.Open();
-            OracleDataReader oraReader = cmd.ExecuteReader();
-
-            List<DataPoint> dataPoints = new List<DataPoint>();
-            while (oraReader.Read())
+            try
             {
-                var rank = oraReader.GetInt32(0);
-                dataPoints.Add(new DataPoint(oraReader.GetString(1), oraReader.GetInt32(2)));
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                cmd.CommandText = "select row_number() over(order by pocet desc) poradie , diagnosis_id, pocet " +
+                                    "from " +
+                                    "(" +
+                                        "select diagnosis_id, count(diagnosis_id) pocet from diagnoses " +
+                                            "where to_char(date_start, 'YYYY') like :YEAR " +
+                                                "group by diagnosis_id" +
+                                    ")fetch first 10 rows only";
+                cmd.Parameters.Add(new OracleParameter("YEAR", year));
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+
+                List<DataPoint> dataPoints = new List<DataPoint>();
+                while (oraReader.Read())
+                {
+                    var rank = oraReader.GetInt32(0);
+                    dataPoints.Add(new DataPoint(oraReader.GetString(1), oraReader.GetInt32(2)));
+                }
+                oraReader.Close();
+                conn.Close();
+
+                ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+                ViewBag.Year = year;
+
+                return View();
+
+            } catch
+            {
+
             }
-            oraReader.Close();
-            conn.Close();
-
-            ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-            ViewBag.Year = year;
-
             return View();
         }
 
@@ -387,9 +394,7 @@ namespace EHealthCard.Controllers
                     return View();
                 }
             } catch
-            {
-                return View();
-            }
+            {}
 
             return View();
         }
