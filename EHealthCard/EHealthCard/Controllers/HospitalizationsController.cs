@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.CodeAnalysis;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using System.Collections;
 
 namespace EHealthCard.Controllers
 {
@@ -231,13 +232,15 @@ namespace EHealthCard.Controllers
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            } catch
+            }
+            catch
             {
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
             }
-            
+
         }
+
         public IActionResult Graph()
         {
             return View();
@@ -245,7 +248,7 @@ namespace EHealthCard.Controllers
         [HttpPost]
         public IActionResult Graph(int year)
         {
-            if(year <= 0)
+            if (year <= 0)
             {
                 return View();
             }
@@ -258,10 +261,10 @@ namespace EHealthCard.Controllers
                                 "from " +
                                 "(" +
                                     "select diagnosis_id, count(diagnosis_id) pocet from diagnoses " +
-                                        "where to_char(date_start, 'YYYY') like :YEAR " +
+                                        "where to_char(date_start, 'YYYY') like :P_YEAR " +
                                             "group by diagnosis_id" +
                                 ")fetch first 10 rows only";
-            cmd.Parameters.Add(new OracleParameter("YEAR", year));            
+            cmd.Parameters.Add(new OracleParameter("YEAR", year));
 
             conn.Open();
             OracleDataReader oraReader = cmd.ExecuteReader();
@@ -278,6 +281,109 @@ namespace EHealthCard.Controllers
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
             ViewBag.Year = year;
 
+            return View();
+        }
+
+        public IActionResult Table()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Table(int p_year, string p_hospitalName)
+        {
+            OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = conn;
+
+            cmd.CommandText = "select diagnosis_id, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 1) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 1 and extract(month from date_end) >= 1) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 1) " +
+                                             "then 1 else 0 end) prvy, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 2) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 2 and extract(month from date_end) >= 2) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 2) " +
+                                             "then 1 else 0 end) druhy, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 3) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 3 and extract(month from date_end) >= 3) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 3) " +
+                                             "then 1 else 0 end) treti, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 4) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 4 and extract(month from date_end) >= 4) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 4) " +
+                                             "then 1 else 0 end) stvrty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 5) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 5 and extract(month from date_end) >= 5) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 5) " +
+                                             "then 1 else 0 end) piaty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 6) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 6 and extract(month from date_end) >= 6) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 6) " +
+                                             "then 1 else 0 end) siesty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 7) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 7 and extract(month from date_end) >= 7) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 7) " +
+                                             "then 1 else 0 end) siedmy, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 😎 or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 8 and extract(month from date_end) >= 😎 or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 😎 " +
+                                             "then 1 else 0 end) osmy, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 9) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 9 and extract(month from date_end) >= 9) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 9) " +
+                                             "then 1 else 0 end) deviaty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 10) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 10 and extract(month from date_end) >= 10) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 10) " +
+                                             "then 1 else 0 end) desiaty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 11) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 11 and extract(month from date_end) >= 11) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 11) " +
+                                             "then 1 else 0 end) jedenasty, " +
+                                    "sum(case when " +
+                                             "(extract(year from date_start) < :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR)) or " +
+                                             "(extract(year from date_start) = :P_YEAR and(date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 12) or " +
+                                             "(extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 12 and extract(month from date_end) >= 12) or " +
+                                             "(extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 12) " +
+                                             "then 1 else 0 end) dvanasty " +
+                                    "from hospital " +
+                                    "join hospitalization using (hospital_name) " +
+                                    "join diagnoses using(person_id,hospital_name,date_start) " +
+                                        "where extract(year from date_start) <= :P_YEAR and (date_end is null or extract(year from date_end) >= :P_YEAR) and hospital_name = :HOSPITAL_NAME " +
+                                        "group by diagnosis_id";
+            cmd.Parameters.Add(new OracleParameter("P_YEAR", p_year));
+            cmd.Parameters.Add(new OracleParameter("HOSPITAL_NAME", p_hospitalName));
+
+            conn.Open();
+            OracleDataReader oraReader = cmd.ExecuteReader();
+            Diagnosis diagnoses = new Diagnosis();
+            while (oraReader.Read())
+            {
+                return View();
+            }
             return View();
         }
     }
