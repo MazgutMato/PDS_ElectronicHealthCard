@@ -446,7 +446,7 @@ namespace EHealthCard.Controllers
                     "when (date_start >= TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM')) " +
                     "and ( NVL(date_end,sysdate) >= last_day(to_date(:P_DATE,'DD.MM.YYYY'))) then last_day(to_date(:P_DATE,'DD.MM.YYYY')) - date_start + 1 " +
                     "end) dayz " +
-                    "from hospitalization" +
+                    "from hospitalization " +
                     "join diagnoses using(person_id, hospital_name, date_start) " +
                     "where hospital_name = :HOSPITAL_NAME and extract(year from date_start) <= :P_YEAR and extract(month from date_start) <= :P_MONTH " +
                     "and extract(year from NVL(date_end,sysdate)) >= :P_YEAR and extract(month from NVL(date_end,sysdate)) >= :P_MONTH) " +
