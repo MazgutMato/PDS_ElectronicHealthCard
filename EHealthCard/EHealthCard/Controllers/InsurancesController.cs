@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
+using Oracle.ManagedDataAccess.Client;
 
 namespace EHealthCard.Controllers
 {
@@ -233,6 +234,41 @@ namespace EHealthCard.Controllers
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        public IActionResult MostInsured()
+        {
+            try
+            {
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                cmd.CommandText = "select rn, person_id, get_person_inf(person_id), ct " +
+                                  "from (select row_number() over(order by count(person_id) desc) rn, " +
+                                  "person_id, count(person_id) ct " +
+                                  "from insurance " + 
+                                  "group by person_id)" +
+                                  "where rn <= 10";
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+
+                var tableMostInsured = new List<MostInsured>();
+                while (oraReader.Read())
+                {
+                    string[] values = oraReader.GetString(2).Split(';');
+                    tableMostInsured.Add(new MostInsured(oraReader.GetString(1), values[0], values[1], oraReader.GetInt32(3)));
+                }
+                oraReader.Close();
+                conn.Close();
+                return View(tableMostInsured);
+            } catch
+            {
+
+            }
+
+            return View(new List<MostInsured>());
         }
     }
 }
