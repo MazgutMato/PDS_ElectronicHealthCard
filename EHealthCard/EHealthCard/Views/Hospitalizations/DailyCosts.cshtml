@@ -1,0 +1,74 @@
+﻿@model IEnumerable<EHealthCard.Models.DailyCosts>
+
+@{
+    ViewData["Title"] = "Daily Costs";
+}
+
+@using (Html.BeginForm())
+{
+    <div class="row from-group">
+        <div class="col">
+            <label>Hospital Name</label>
+            <input type="text" name="p_hospitalName" class="form-control"></input>
+        </div>
+        <div class="col">
+            <label>Year</label>
+            <input type="number" name="p_year" class="form-control"></input>
+        </div>
+        <div class="col">
+            <label>Month</label>
+            <input type="text" name="p_month" class="form-control"></input>
+        </div>       
+        <div class="col align-self-center">
+            <button type="submit" class="btn btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z" />
+                </svg>
+                Display
+            </button>
+        </div>
+    </div>
+}
+
+@if (Model.Count() != 0)
+{
+    <h3 align="center">Count of Diagnosis Cases in Hospital Over Year</h3>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Diagnoses
+                </th>
+                <th>
+                    Days
+                </th>
+                <th>
+                    Costs per day € 
+                </th>
+                <th>
+                    All Costs in Month €
+                </th>               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Days) €
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CostPerDay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AllCosts) €
+                    </td>                  
+                </tr>
+            }
+        </tbody>
+    </table>
+}

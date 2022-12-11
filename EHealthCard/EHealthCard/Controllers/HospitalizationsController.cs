@@ -306,81 +306,81 @@ namespace EHealthCard.Controllers
                 cmd.Connection = conn;
                 cmd.CommandText = "select diagnosis_id, " + 
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 1 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 1 and extract(month from date_end) >= 1 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 1 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 1 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 1 and extract(month from NVL(date_end,sysdate)) >= 1 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 1 ) " +
                     "then 1 else 0 end) first, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 2 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 2 and extract(month from date_end) >= 2 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 2 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 2 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 2 and extract(month from NVL(date_end,sysdate)) >= 2 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 2 ) " +
                     "then 1 else 0 end) second, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 3 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 3 and extract(month from date_end) >= 3 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 3 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 3 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 3 and extract(month from NVL(date_end,sysdate)) >= 3 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 3 ) " +
                     "then 1 else 0 end) third, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 4 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 4 and extract(month from date_end) >= 4 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 4 )" +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 4 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 4 and extract(month from NVL(date_end,sysdate)) >= 4 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 4 )" +
                     "then 1 else 0 end) fourth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 5 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 5 and extract(month from date_end) >= 5 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 5 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 5 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 5 and extract(month from NVL(date_end,sysdate)) >= 5 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 5 ) " +
                     "then 1 else 0 end) fifth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 6 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 6 and extract(month from date_end) >= 6 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 6 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 6 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 6 and extract(month from NVL(date_end,sysdate)) >= 6 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 6 ) " +
                     "then 1 else 0 end) sixth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 7 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 7 and extract(month from date_end) >= 7 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 7 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 7 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 7 and extract(month from NVL(date_end,sysdate)) >= 7 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 7 ) " +
                     "then 1 else 0 end) seventh, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 8 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 8 and extract(month from date_end) >= 8 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 8 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 8 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 8 and extract(month from NVL(date_end,sysdate)) >= 8 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 8 ) " +
                     "then 1 else 0 end) eighth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 9 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 9 and extract(month from date_end) >= 9 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 9 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 9 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 9 and extract(month from NVL(date_end,sysdate)) >= 9 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 9 ) " +
                     "then 1 else 0 end) ninth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 10 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 10 and extract(month from date_end) >= 10 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 10 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 10 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 10 and extract(month from NVL(date_end,sysdate)) >= 10 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 10 ) " +
                     "then 1 else 0 end) tenth, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 11 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 11 and extract(month from date_end) >= 11 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 11 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 11 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 11 and extract(month from NVL(date_end,sysdate)) >= 11 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 11 ) " +
                     "then 1 else 0 end) eleventh, " +
                     "sum(case when " +
-                    "(  extract(year from date_start) < :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and (date_end is null or extract(year from date_end) > :P_YEAR) and extract(month from date_start) <= 12 ) or " +
-                    "(  extract(year from date_start) = :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_start) <= 12 and extract(month from date_end) >= 12 ) or " +
-                    "(  extract(year from date_start) < :P_YEAR and extract(year from date_end) = :P_YEAR and extract(month from date_end) >= 12 ) " +
+                    "(  extract(year from date_start) < :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and (extract(year from NVL(date_end,sysdate)) > :P_YEAR) and extract(month from date_start) <= 12 ) or " +
+                    "(  extract(year from date_start) = :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from date_start) <= 12 and extract(month from NVL(date_end,sysdate)) >= 12 ) or " +
+                    "(  extract(year from date_start) < :P_YEAR and extract(year from NVL(date_end,sysdate)) = :P_YEAR and extract(month from NVL(date_end,sysdate)) >= 12 ) " +
                     "then 1 else 0 end) twelfth " +
                     "from hospital " +
                     "join hospitalization using(hospital_name) " +
                     "join diagnoses using(person_id,hospital_name,date_start) " +
-                    "where extract(year from date_start) <= :P_YEAR and (date_end is null or extract(year from date_end) >= :P_YEAR) and hospital_name = :HOSPITAL_NAME " +
+                    "where extract(year from date_start) <= :P_YEAR and (extract(year from NVL(date_end,sysdate)) >= :P_YEAR) and hospital_name = :HOSPITAL_NAME " +
                     "group by diagnosis_id";
                 cmd.BindByName = true;
                 cmd.Parameters.Add(new OracleParameter("P_YEAR", p_year));
@@ -415,6 +415,72 @@ namespace EHealthCard.Controllers
             {}
 
             return View();
+        }
+
+        public IActionResult DailyCosts()
+        {
+            return View(new List<DailyCosts>());
+        }
+
+        [HttpPost]
+        public IActionResult DailyCosts(int p_year, int p_month, string p_hospitalName)
+        {
+            try
+            {
+                string p_date = "10." + p_month.ToString() + "." + p_year.ToString();
+
+
+
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = 
+                    "select diagnosis_id, days, daily_costs, daily_costs*days from " +
+                    "(select diagnosis_id, sum(dayz) days from " +
+                    "(select diagnosis_id,(case when (date_start <= TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM')) " +
+                    "and ( NVL(date_end,sysdate) <= last_day(to_date(:P_DATE,'DD.MM.YYYY'))) then  NVL(date_end,sysdate) - TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM') + 1 " +
+                    "when (date_start <= TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM')) " +
+                    "and ( NVL(date_end,sysdate) >= last_day(to_date(:P_DATE,'DD.MM.YYYY'))) then last_day(to_date(:P_DATE,'DD.MM.YYYY')) - TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM') + 1 " +
+                    "when (date_start >= TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM')) " +
+                    "and ( NVL(date_end,sysdate) <= last_day(to_date(:P_DATE,'DD.MM.YYYY'))) then NVL(date_end,sysdate) - date_start + 1 " +
+                    "when (date_start >= TRUNC(to_date(:P_DATE,'DD.MM.YYYY'), 'MM')) " +
+                    "and ( NVL(date_end,sysdate) >= last_day(to_date(:P_DATE,'DD.MM.YYYY'))) then last_day(to_date(:P_DATE,'DD.MM.YYYY')) - date_start + 1 " +
+                    "end) dayz " +
+                    "from hospitalization" +
+                    "join diagnoses using(person_id, hospital_name, date_start) " +
+                    "where hospital_name = :HOSPITAL_NAME and extract(year from date_start) <= :P_YEAR and extract(month from date_start) <= :P_MONTH " +
+                    "and extract(year from NVL(date_end,sysdate)) >= :P_YEAR and extract(month from NVL(date_end,sysdate)) >= :P_MONTH) " +
+                    "group by diagnosis_id) " +
+                    "join diagnoses_type using(diagnosis_id)";
+                cmd.BindByName = true;
+                cmd.Parameters.Add(new OracleParameter("HOSPITAL_NAME", p_hospitalName));
+                cmd.Parameters.Add(new OracleParameter("P_YEAR", p_year));
+                cmd.Parameters.Add(new OracleParameter("P_MONTH", p_month));
+                cmd.Parameters.Add(new OracleParameter("P_DATE", p_date));
+                
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+                Diagnosis diagnoses = new Diagnosis();
+
+
+                List<DailyCosts> tableRecords = new List<DailyCosts>();
+                while (oraReader.Read())
+                {
+                    tableRecords.Add(new DailyCosts(oraReader.GetString(0),
+                        oraReader.GetInt32(1),
+                        oraReader.GetInt32(2),
+                        oraReader.GetInt32(3)));
+                }
+                oraReader.Close();
+                conn.Close();
+                return View(tableRecords);
+            }
+            catch
+            {
+
+            }
+            return View(new List<DailyCosts>());
         }
     }
 }
