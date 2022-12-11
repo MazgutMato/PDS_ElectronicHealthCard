@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 using Oracle.ManagedDataAccess.Client;
+using Newtonsoft.Json;
 
 namespace EHealthCard.Controllers
 {
@@ -269,6 +270,62 @@ namespace EHealthCard.Controllers
             }
 
             return View(new List<MostInsured>());
+        }
+        public IActionResult Graph()
+        {
+            try
+            {
+                var dataPoints = new List<DataPoint>();
+
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                //Count
+                cmd.CommandText = "select count(person_id) from insurance " +
+                                    "where date_end is null";
+
+                conn.Open();
+                var oraReader = cmd.ExecuteReader();
+
+                var count = 0;
+                while (oraReader.Read())
+                {
+                    count = oraReader.GetInt32(0);
+                }
+                oraReader.Close();                
+
+                //Top 10
+                cmd.CommandText = "select * from" +
+                                    "(" +
+                                        "select row_number() over(order by count(person_id) desc) poradie,comp_id, count(person_id) from insurance " +
+                                        "where date_end is null " +
+                                        "group by comp_id " +
+                                    ")WHERE poradie <= 10";
+
+                oraReader = cmd.ExecuteReader();
+
+                double sum = 0;
+                while (oraReader.Read())
+                {
+                    double comCount = oraReader.GetInt32(2);
+                    double percentage = comCount / count * 100;
+                    dataPoints.Add(new DataPoint(oraReader.GetString(1), percentage));
+                    sum += percentage;
+                }
+                oraReader.Close();
+                conn.Close();
+
+                dataPoints.Add(new DataPoint("Others", 100 - sum));
+
+                ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+            }
+            catch
+            {
+
+            }
+
+            return View();
         }
     }
 }

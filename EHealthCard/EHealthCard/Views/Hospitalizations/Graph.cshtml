@@ -9,13 +9,19 @@
             animationEnabled: true,
             theme: "light2",//"light2",  "light1", "dark1", "dark2"
             exportEnabled: true,
+            axisX: {
+                title: "Diagnosis"
+            },
+            axisY: {
+                title: "Count"
+            },
             title: {
-                text: "Most common diagnoses - " + @Html.Raw(ViewBag.Year)
-                            },
+                text: "Most common diagnosis - " + @Html.Raw(ViewBag.Year)
+            },
             data: [{
                 type: "column",
                 dataPoints: @Html.Raw(ViewBag.DataPoints)
-                                }]
+            }]
         });
         chart.render();
 
