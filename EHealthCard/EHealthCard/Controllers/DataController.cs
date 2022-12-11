@@ -126,7 +126,7 @@ namespace EHealthCard.Controllers
             //Cities
             var count = 0;
             var cities = new List<City>();
-            while (count < 100)
+            while (count < 5000)
             {
                 var city = new City();
                 city.Zip = this.RandomString("0123456789", 5, 5, false, false);
@@ -153,7 +153,7 @@ namespace EHealthCard.Controllers
             //People
             count = 0;
             var people = new List<Person>();
-            while (count != 1000)
+            while (count != 100000)
             {
                 //Generate values
                 var id = this.GeneratePersonId();
@@ -202,7 +202,7 @@ namespace EHealthCard.Controllers
             //Hospitals
             var hospitals = new List<Hospital>();
             count = 0;
-            while (count != 100)
+            while (count != 2500)
             {
                 var hospital = new Hospital();
                 hospital.Capacity = random.Next(50, 500);
@@ -230,7 +230,7 @@ namespace EHealthCard.Controllers
             //Insurance companies
             var companies = new List<InsuranceComp>();
             count = 0;
-            while (count != 10)
+            while (count != 100)
             {
                 var comp = new InsuranceComp();
                 comp.CompId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 3, true, true);
@@ -254,17 +254,13 @@ namespace EHealthCard.Controllers
             }
             await _context.SaveChangesAsync();
 
-            //Incurencies ended and not insured now
+            //Incurencies
             var NotInsured = new List<Person>(people);
+            var Insured = new List<Person>();
             count = 0;
-            while (count != 200)
+            while (count != 95000)
             {
                 var person = NotInsured[random.Next(NotInsured.Count)];
-                var comp = companies[random.Next(companies.Count)];
-
-                var insurance = new Insurance();
-                insurance.PersonId = person.PersonId;
-                insurance.CompId = comp.CompId;
 
                 var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
                 if (year < 23)
@@ -279,83 +275,72 @@ namespace EHealthCard.Controllers
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
                 var birthDate = new DateTime(year, month, day).Date;
 
-                //Generate
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - birthDate.Date).TotalDays)).Date;
-                insurance.DateStart = starDate;
-                insurance.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - starDate.Date).TotalDays)).Date;
+                var insCount = random.Next(1, 5);
+                var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
+                while (count < 95000 && insCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1))
+                {
+                    var insurance = new Insurance();
+                    insurance.PersonId = person.PersonId;
+                    var comp = companies[random.Next(companies.Count)];
+                    insurance.CompId = comp.CompId;
+                    //Generate
+                    var starDate = firstDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - firstDate.Date).TotalDays)).Date;
+                    insurance.DateStart = starDate;
+                    insurance.DateEnd = starDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - starDate.Date).TotalDays)).Date;
 
-                var res = false;
-                try
-                {
-                    await _context.AddAsync(insurance);
-                    res = true;
+                    var res = false;
+                    try
+                    {
+                        await _context.AddAsync(insurance);
+                        res = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        _context.Remove(insurance);
+                        res = false;
+                    }
+                    if (res)
+                    {
+                        firstDate = (DateTime)insurance.DateEnd;
+                        insCount--;
+                    }
                 }
-                catch (Exception ex)
+
+                //Actual
+                if(firstDate < DateTime.Now.Date.AddDays(-1))
                 {
-                    _context.Remove(insurance);
-                    res = false;
+                    var insurance = new Insurance();
+                    insurance.PersonId = person.PersonId;
+                    var comp = companies[random.Next(companies.Count)];
+                    insurance.CompId = comp.CompId;
+
+                    var starDate = firstDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - firstDate.Date).TotalDays)).Date;
+                    insurance.DateStart = starDate;
+
+                    var res = false;
+                    try
+                    {
+                        await _context.AddAsync(insurance);
+                        res = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        _context.Remove(insurance);
+                        res = false;
+                    }
+                    if (res)
+                    {
+                        Insured.Add(person);
+                    }
                 }
-                if (res)
-                {
-                    count++;
-                    NotInsured.Remove(person);
-                }
+                count++;
+                NotInsured.Remove(person);
             }
-            await _context.SaveChangesAsync();
-
-            //Incurencies actual
-            var Insured = new List<Person>();
-            count = 0;
-            while (count != 600)
-            {
-                var person = NotInsured[random.Next(NotInsured.Count)];
-                var comp = companies[random.Next(companies.Count)];
-
-                //Actual insurance
-                var insurance = new Insurance();
-                insurance.PersonId = person.PersonId;
-                insurance.CompId = comp.CompId;
-
-                var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
-                if (year < 22)
-                {
-                    year += 2000;
-                }
-                else
-                {
-                    year += 1900;
-                }
-                var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
-                var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
-                var birthDate = new DateTime(year, month, day).Date;
-
-                //Set date
-                var starDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - birthDate.Date).TotalDays)).Date;
-                insurance.DateStart = starDate;
-
-                var res = false;
-                try
-                {
-                    await _context.AddAsync(insurance);
-                    res = true;
-                }
-                catch (Exception ex)
-                {
-                    _context.Remove(insurance);
-                    res = false;
-                }
-                if (res)
-                {
-                    NotInsured.Remove(person);
-                    Insured.Add(person);
-                    count++;
-                }
-            }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();            
 
             //Payments
             count = 0;
-            while (count != 1000)
+            while (count != 50000)
             {
                 var hospital = hospitals[random.Next(hospitals.Count)];
                 var comp = companies[random.Next(companies.Count)];
@@ -420,7 +405,7 @@ namespace EHealthCard.Controllers
             //DiagnosesTypes
             var diagnosesTypes = new List<DiagnosesType>();
             count = 0;
-            while (count != 100)
+            while (count != 500)
             {
                 var type = new DiagnosesType();
                 type.DiagnosisId = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 5, true, true);
@@ -445,14 +430,14 @@ namespace EHealthCard.Controllers
             }
             await _context.SaveChangesAsync();
 
-            //Hospitalizations ended
+            //Hospitalizations
             count = 0;
-            while (count < 200)
+            while (count < 50000)
             {
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
 
-                var hospCount = random.Next(1, 5);
+                var hospCount = random.Next(1, 9);
                 var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
                 if (year < 23)
                 {
@@ -468,7 +453,7 @@ namespace EHealthCard.Controllers
 
                 //Ended
                 var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
-                while (count < 200 && hospCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1) )
+                while (count < 50000 && hospCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1) )
                 {
                     var hospitalization = new Hospitalization();
                     hospitalization.HospitalName = hospital.HospitalName;
@@ -509,7 +494,7 @@ namespace EHealthCard.Controllers
                             hospDiagnoze.DateStart = hospitalization.DateStart;
                             hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
 
-                            if (random.Next(0, 2) == 0)
+                            if (random.Next(0, 5) == 0)
                             {
                                 string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
                                 FileStream fls = null;
@@ -585,7 +570,7 @@ namespace EHealthCard.Controllers
                             hospDiagnoze.DateStart = hospitalization.DateStart;
                             hospDiagnoze.DiagnosisId = diagnosesTypes[random.Next(diagnosesTypes.Count)].DiagnosisId;
 
-                            if (random.Next(0, 2) == 0)
+                            if (random.Next(0, 5) == 0)
                             {
                                 string filePath = "..\\..\\Pictures\\" + random.Next(1, 11) + ".jpg";
                                 FileStream fls = null;
