@@ -135,7 +135,33 @@ select hospital_name, sum from
 
 -- Percentage of Gender Birth over Year
 select 
-    sum(case when substr(person_id, 3 , 2) < 50 then 1 else 0 end) muzi,
-    sum(case when substr(person_id, 3 , 2) > 12 then 1 else 0 end) zeny
+    sum(case when substr(person_id, 3 , 2) < 50 then 1 else 0 end) men,
+    sum(case when substr(person_id, 3 , 2) > 12 then 1 else 0 end) women
 from person
     where extract(year from id_to_birthdate(person_id)) = 2019;
+
+--Top Insurance Companies
+select * from
+(
+	select row_number() over(order by count(person_id) desc) poradie,comp_id, count(person_id) from insurance
+        	where date_end is null 
+                group by comp_id
+)WHERE poradie <= 10
+
+--Actual hospitalizations
+select hospital_name, count(person_id) hosp, capacity from hospital
+	left join hospitalization using(hospital_name)
+	where ZIP = :p_zip and date_end is null
+        	group by hospital_name, capacity;
+
+--Hospitalizations over s Year
+select get_hosp_count(:YEAR, :MONTH, :HOSP_NAME) from dual;
+
+--Most common Diagnoses
+select row_number() over(order by pocet desc) poradie , diagnosis_id, pocet
+	from
+        (
+        select diagnosis_id, count(diagnosis_id) pocet from diagnoses
+        	where to_char(date_start, 'YYYY') like :YEAR
+                group by diagnosis_id
+	)fetch first 10 rows only;
