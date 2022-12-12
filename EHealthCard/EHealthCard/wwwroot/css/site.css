@@ -30,3 +30,7 @@ hr {
 .container {
     color: black
 }
+
+.canvasjs-chart-credit {
+    display: none !important;
+}

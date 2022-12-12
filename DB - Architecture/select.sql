@@ -132,3 +132,10 @@ select hospital_name, sum from
         where comp_id = 'AIK' 
         group by hospital_name)
     where rn <= 10;
+
+-- Percentage of Gender Birth over Year
+select 
+    sum(case when substr(person_id, 3 , 2) < 50 then 1 else 0 end) muzi,
+    sum(case when substr(person_id, 3 , 2) > 12 then 1 else 0 end) zeny
+from person
+    where extract(year from id_to_birthdate(person_id)) = 2019;
