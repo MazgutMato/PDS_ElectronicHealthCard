@@ -351,5 +351,51 @@ namespace EHealthCard.Controllers
             }
             return View();
         }
+
+        public IActionResult CompHosSum()
+        {
+            return View(new List<HospitalizationTableRecord>());
+        }
+
+        [HttpPost]
+        public IActionResult CompHosSum(string p_compID) 
+        {
+            try
+            {
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+                cmd.CommandText =
+                    "select hospital_name, sum from " +
+                    "(select row_number() over(order by sum(to_number(extractValue(payment.details, '/Payment/Amount'))) desc) rn " +
+                    ",hospital_name, sum(to_number(extractValue(payment.details, '/Payment/Amount'))) sum " +
+                    "from payment " +
+                    "where comp_id = :P_COMPID " +
+                    "group by hospital_name) " +
+                    "where rn <= 10" ;
+                cmd.BindByName = true;
+                cmd.Parameters.Add(new OracleParameter("P_COMPID", p_compID));
+
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+                Diagnosis diagnoses = new Diagnosis();
+
+
+                List<HospitalizationTableRecord> tableRecords = new List<HospitalizationTableRecord>();
+                while (oraReader.Read())
+                {
+                    tableRecords.Add(new HospitalizationTableRecord(oraReader.GetString(0), oraReader.GetInt32(1)));
+                }
+                oraReader.Close();
+                conn.Close();
+                return View(tableRecords);
+            }
+            catch
+            {
+
+            }
+            return View(new List<HospitalizationTableRecord>());
+        }
     }
 }
