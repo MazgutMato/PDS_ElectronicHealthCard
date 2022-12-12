@@ -122,4 +122,13 @@ select rn, person_id, get_person_inf(person_id), ct
             person_id, count(person_id) ct  
             from insurance   
             group by person_id) 
-where rn <= 10
+where rn <= 10;
+
+-- Top 10 Payed hospitals from 1 Insurance Company
+select hospital_name, sum from    
+    (select row_number() over(order by sum(to_number(extractValue(payment.details, '/Payment/Amount'))) desc) rn 
+    ,hospital_name, sum(to_number(extractValue(payment.details, '/Payment/Amount'))) sum
+        from payment
+        where comp_id = 'AIK' 
+        group by hospital_name)
+    where rn <= 10;
