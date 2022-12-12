@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using System.Text;
 using System.Xml;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace EHealthCard.Controllers
 {
@@ -151,6 +152,9 @@ namespace EHealthCard.Controllers
             await _context.SaveChangesAsync();
 
             //People
+            var command = new OracleCommand();
+            command.Connection = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+            command.Connection.Open();
             count = 0;
             var people = new List<Person>();
             while (count != 100000)
@@ -163,9 +167,7 @@ namespace EHealthCard.Controllers
                 var phone = "+4219" + this.RandomString("0123456789", 8, 8, false, false);
                 var email = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 10, false, false) + "@"
                     + this.RandomString("abcdefghijklmnopqrstuvwxyz", 3, 8, false, false) + ".com";
-                //Create command
-                var command = new OracleCommand();
-                command.Connection = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                //Create command                
                 command.CommandType = System.Data.CommandType.Text;
                 command.CommandText = "insert into person values(:ID, :ZIP,person_inf(:First_Name,:Last_Name,:Phone,:Email))";
                 OracleParameter[] parameters = new OracleParameter[]
@@ -181,7 +183,6 @@ namespace EHealthCard.Controllers
                 //Generate values               
                 try
                 {
-                    command.Connection.Open();
                     command.ExecuteNonQuery();
                     var newPerson = new Person();
                     newPerson.PersonId = id;
@@ -192,12 +193,9 @@ namespace EHealthCard.Controllers
                 catch (Exception ex)
                 {
                     var exeption = ex;
-                }
-                finally
-                {
-                    command.Connection.Close();
-                }
+                }                
             }
+            command.Connection.Close();
 
             //Hospitals
             var hospitals = new List<Hospital>();
