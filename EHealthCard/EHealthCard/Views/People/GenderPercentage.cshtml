@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Graph";
+}
+
+<script>
+    window.onload = function () {
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light1", // "light1", "light2", "dark1", "dark2"
+            exportEnabled: true,
+            title: {
+                text: "Percentage of Gender Birth over Year"
+            },
+            data: [{
+                type: "doughnut",
+                startAngle: 60,
+                indexLabelFontSize: 16,
+                indexLabel: "{label} - {y}%",
+                toolTipContent: "<b>{label}:</b> {y}%",
+                dataPoints: @Html.Raw(ViewBag.DataPoints)
+        }]
+        });
+        chart.render();
+
+    }
+</script>
+
+@using (Html.BeginForm())
+{
+    <div class="row form-group">
+        <div class="col">
+            <label>Year</label>
+            <input type="number" name="p_year" class="form-control"></input>
+        </div>
+        <div class="col align-self-center">
+            <button type="submit" class="btn btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM8 6a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 .708-.708L7.5 12.293V6.5A.5.5 0 0 1 8 6z" />
+                </svg>
+                Display
+            </button>
+        </div>
+    </div>
+}
+
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+

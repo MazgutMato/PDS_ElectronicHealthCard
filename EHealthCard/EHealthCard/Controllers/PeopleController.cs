@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EHealthCard.Models;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace EHealthCard.Controllers
 {
@@ -244,6 +245,57 @@ namespace EHealthCard.Controllers
                 TempData["Message"] = "Data Deletion Failed";
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        public IActionResult GenderPercentage()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult GenderPercentage(int p_year)
+        {
+            if (p_year <= 0)
+            {
+                return View();
+            }
+
+            try
+            {
+                var dataPoints = new List<DataPoint>();
+
+                OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = conn;
+
+                cmd.CommandText = "select " +
+                                    "sum(case when substr(person_id, 3 , 2) < 50 then 1 else 0 end) muzi, " +
+                                    "sum(case when substr(person_id, 3 , 2) > 12 then 1 else 0 end) zeny " +
+                                    "from person " +
+                                        "where extract(year from id_to_birthdate(person_id)) = :p_year";
+                cmd.Parameters.Add(new OracleParameter("p_year", p_year));
+
+                conn.Open();
+                OracleDataReader oraReader = cmd.ExecuteReader();
+
+                while (oraReader.Read())
+                {
+                    double count = oraReader.GetDouble(0) + oraReader.GetDouble(1);
+                    dataPoints.Add(new DataPoint("Men", oraReader.GetDouble(0) / count * 100));
+                    dataPoints.Add(new DataPoint("Women", oraReader.GetDouble(1) / count * 100));
+                }
+                oraReader.Close();
+                conn.Close();
+
+                ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
+                ViewBag.Year = p_year;
+
+            }
+            catch
+            {
+
+            }
+
+            return View();
         }
     }
 }
