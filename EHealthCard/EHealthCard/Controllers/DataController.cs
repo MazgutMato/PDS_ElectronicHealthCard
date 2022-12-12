@@ -275,7 +275,15 @@ namespace EHealthCard.Controllers
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
                 var birthDate = new DateTime(year, month, day).Date;
 
-                var insCount = random.Next(1, 5);
+                var insCount = 0;
+                if (random.Next(0,100) < 1)
+                {
+                    insCount = random.Next(5, 11);
+                } else
+                {
+                    insCount = random.Next(1, 5);
+                }                
+
                 var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
                 while (count < 95000 && insCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1))
                 {
@@ -311,7 +319,15 @@ namespace EHealthCard.Controllers
                 {
                     var insurance = new Insurance();
                     insurance.PersonId = person.PersonId;
-                    var comp = companies[random.Next(companies.Count)];
+                    var comRand = random.Next(0, 100);
+                    InsuranceComp comp = null;
+                    if(comRand < 75){
+                        comp = companies[random.Next(10)];
+                    }else
+                    {
+                        comp = companies[random.Next(companies.Count)];
+                    }
+                    
                     insurance.CompId = comp.CompId;
 
                     var starDate = firstDate.AddDays(random.Next(0, (int)(DateTime.Now.Date - firstDate.Date).TotalDays)).Date;
@@ -340,7 +356,7 @@ namespace EHealthCard.Controllers
 
             //Payments
             count = 0;
-            while (count != 50000)
+            while (count != 100000)
             {
                 var hospital = hospitals[random.Next(hospitals.Count)];
                 var comp = companies[random.Next(companies.Count)];
@@ -349,7 +365,7 @@ namespace EHealthCard.Controllers
                 payment.HospitalName = hospital.HospitalName;
                 payment.CompId = comp.CompId;
 
-                int days = random.Next(365 * 5);
+                int days = random.Next(365 * 10);
                 var date = DateTime.Now.AddDays(-days).Date;
                 var period = date.AddDays(-random.Next(365));
                 payment.PaymentDate = date;
