@@ -349,7 +349,7 @@ namespace EHealthCard.Controllers
                 payment.HospitalName = hospital.HospitalName;
                 payment.CompId = comp.CompId;
 
-                int days = random.Next(365 * yearsBack);
+                int days = random.Next(365 * 5);
                 var date = DateTime.Now.AddDays(-days).Date;
                 var period = date.AddDays(-random.Next(365));
                 payment.PaymentDate = date;
@@ -378,7 +378,7 @@ namespace EHealthCard.Controllers
                     writer.WriteEndElement();
 
                     writer.WriteElementString("Amount",
-                       random.Next(500, 10000).ToString());
+                       random.Next(500, 4000).ToString());
 
                     writer.WriteEndElement();
                 }
@@ -450,6 +450,10 @@ namespace EHealthCard.Controllers
                 var month = Convert.ToInt32(person.PersonId.Substring(2, 2)) % 50;
                 var day = Convert.ToInt32(person.PersonId.Substring(4, 2));
                 var birthDate = new DateTime(year, month, day).Date;
+
+                if (birthDate < DateTime.Now.AddYears(-10)) {
+                    birthDate = DateTime.Now.AddYears(-10);
+                }
 
                 //Ended
                 var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
