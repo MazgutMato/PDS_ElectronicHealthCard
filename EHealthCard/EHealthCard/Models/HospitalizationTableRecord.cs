@@ -25,6 +25,12 @@ namespace EHealthCard.Models
             this.eleventh = eleventh;
             this.twelveth = twelveth;
         }
+        public HospitalizationTableRecord(string name, int first)
+        {
+            this.name = name;
+            this.first = first;
+        }
+
         public string name { get; set; }
         public int first { get; set; }
         public int second { get; set; }
