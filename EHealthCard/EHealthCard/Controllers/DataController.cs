@@ -446,7 +446,7 @@ namespace EHealthCard.Controllers
 
             //Hospitalizations
             count = 0;
-            while (count < 300000 && Insured.Count > 0)
+            while (count < 60000 && Insured.Count > 0)
             {
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
@@ -471,7 +471,7 @@ namespace EHealthCard.Controllers
 
                 //Ended
                 var firstDate = birthDate.AddDays(random.Next(0, (int)(DateTime.Now - birthDate).TotalDays)).Date;
-                while (count < 300000 && hospCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1) && Insured.Count > 0)
+                while (count < 60000 && hospCount > 0 && firstDate < DateTime.Now.Date.AddDays(-1) && Insured.Count > 0)
                 {
                     var hospitalization = new Hospitalization();
                     hospitalization.HospitalName = hospital.HospitalName;
@@ -495,7 +495,6 @@ namespace EHealthCard.Controllers
                     }
                     if (res)
                     {
-                        count++;
                         hospCount--;
                         if(hospitalization.DateEnd != null)
                         {
@@ -503,7 +502,7 @@ namespace EHealthCard.Controllers
                         }                        
 
                         //Diagnoses
-                        var diagnosesCount = random.Next(1, 3);
+                        var diagnosesCount = random.Next(1, 4);
                         while (diagnosesCount > 0)
                         {
                             var hospDiagnoze = new Diagnosis();
@@ -576,10 +575,9 @@ namespace EHealthCard.Controllers
                     }
                     if (res)
                     {
-                        count++;
 
                         //Diagnoses
-                        var diagnosesCount = random.Next(1, 3);
+                        var diagnosesCount = random.Next(1, 4);
                         while (diagnosesCount > 0)
                         {
                             var hospDiagnoze = new Diagnosis();
@@ -627,6 +625,7 @@ namespace EHealthCard.Controllers
                         Insured.Remove(person);
                     }
                 }
+                count++;
             }
             await _context.SaveChangesAsync();
 
