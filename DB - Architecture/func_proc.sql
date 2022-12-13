@@ -50,26 +50,6 @@ begin
 end;
 /
 
-create or replace type t_rec_hosp as object(
-    name varchar(20),
-    first_m integer,
-    second_m integer,
-    third_m integer,
-    fourth_m integer,
-    fifth_m integer,
-    sixth_m integer,
-    seven_m integer,
-    eighth_m integer,
-    ninth_m integer,
-    tent_h integer,
-    eleventh_m integer,
-    twelfth_m integer
-);
-/
-
-create or replace type t_hosp is table of t_rec_hosp;
-/
-
 create or replace function get_hosp_count
 (
     p_year integer,
