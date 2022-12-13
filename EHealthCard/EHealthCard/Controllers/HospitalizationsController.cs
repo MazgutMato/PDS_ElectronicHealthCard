@@ -254,6 +254,7 @@ namespace EHealthCard.Controllers
             }
             try
             {
+                var p_year = year.ToString();
                 OracleConnection conn = new OracleConnection("User Id=c##local;Password=oracle;Data Source=25.48.253.17:1521/xe;");
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = conn;
@@ -265,7 +266,7 @@ namespace EHealthCard.Controllers
                                             "where to_char(date_start, 'YYYY') like :YEAR " +
                                                 "group by diagnosis_id" +
                                     ")fetch first 10 rows only";
-                cmd.Parameters.Add(new OracleParameter("YEAR", year));
+                cmd.Parameters.Add(new OracleParameter("YEAR", p_year));
 
                 conn.Open();
                 OracleDataReader oraReader = cmd.ExecuteReader();
