@@ -35,6 +35,8 @@ select diagnosis_id, days, daily_costs, daily_costs*days from
             and extract(year from NVL(date_end,sysdate)) >= 2022 and extract(month from NVL(date_end,sysdate)) >= 11)
         group by diagnosis_id)
     join diagnoses_type using(diagnosis_id);
+--Index
+create index dailyCost on hospitalization(hospital_name, date_start, date_end);
     
 -- Number of diagnoses cases in Hospitals, in Months Over a Year
 select diagnosis_id,   
@@ -165,3 +167,5 @@ select row_number() over(order by pocet desc) poradie , diagnosis_id, pocet
         	where to_char(date_start, 'YYYY') like '2022'
                 group by diagnosis_id
 	)fetch first 10 rows only;
+--Index
+create index mostDiagnoses on diagnoses(to_char(date_start, 'YYYY'), diagnosis_id);
