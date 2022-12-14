@@ -153,7 +153,7 @@ select * from
 --Actual hospitalizations
 select hospital_name, count(person_id) hosp, capacity from hospital
 	left join hospitalization using(hospital_name)
-	where ZIP = '01823' and date_end is null
+	where ZIP = '32038' and date_end is null
         	group by hospital_name, capacity;
 
 --Hospitalizations over s Year
