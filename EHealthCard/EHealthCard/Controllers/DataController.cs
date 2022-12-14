@@ -451,7 +451,7 @@ namespace EHealthCard.Controllers
                 var person = Insured[random.Next(Insured.Count)];
                 var hospital = hospitals[random.Next(hospitals.Count)];
 
-                var hospCount = random.Next(1, 9);
+                var hospCount = random.Next(1, 3);
                 var year = Convert.ToInt32(person.PersonId.Substring(0, 2));
                 if (year < 23)
                 {
